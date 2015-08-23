@@ -1,0 +1,39 @@
+{% extends "task/base.html" %}
+{% load staticfiles %}
+{% load assets %}
+{% block head %}
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    {% assets "all_css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}" />
+    {% endassets %}
+    <title>Main</title>
+{% endblock %}
+{% block content %}
+    <h1>42 Coffee Cups Test Assignment</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="row">
+                            <div class="col-xs-12 field"><span class="content-title">Name:</span>{{ profile.name }}</div>
+                            <div class="col-xs-12 field"><span class="content-title">Last name:</span>{{ profile.last_name }}</div>
+                            <div class="col-xs-12 field"><span class="content-title">Date of birth:</span>{{ profile.date_of_birth }}</div>
+                            <div class="col-xs-12 field"></div>
+                            <div class="col-xs-12 field bio-field"><span class="content-title">Bio:</span>{{ profile.bio|linebreaks }}</div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 ">
+                        <div class="row">
+                            <div class="col-xs-12 field"><span class="content-title">Contacts:</span>{{ profile.contacts }}</div>
+                            <div class="col-xs-12 field"><span class="content-title">Email:</span>{{ profile.email }}</div>
+                            <div class="col-xs-12 field"><span class="content-title">Jabber:</span>{{ profile.jabber }}</div>
+                            <div class="col-xs-12 field"><span class="content-title">Skype:</span>{{ profile.skype }}</div>
+                            <div class="col-xs-12 field"><span class="content-title">Other contacts:</span>{{ profile.other_contacts|linebreaks }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}
