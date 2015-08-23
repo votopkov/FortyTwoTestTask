@@ -14,3 +14,10 @@ h1 {
     height:2px;
     background:black;
 }
+.field {
+    margin-bottom:10px;
+}
+
+.bio-field {
+    margin-top:20px;
+}
