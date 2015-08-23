@@ -2,11 +2,8 @@
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase
-from django.test import RequestFactory
 from models import Profile
-from models import Requests
 from django.conf import settings
-from http_request import SaveHttpRequestMiddleware
 client = Client()
 
 
@@ -38,4 +35,3 @@ class ProfileMethodTests(TestCase):
         self.assertContains(response, '+380937080855')
         # test if not another profile on the main page
         self.assertNotIn('Василий', response.content)
-
