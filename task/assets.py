@@ -5,3 +5,8 @@ css = Bundle('bootstrap-3.3.5-dist/css/bootstrap.min.css', 'css/style.css',
              filters='cssmin',
              output='css_all.css')
 register('all_css', css)
+
+js = Bundle('js/jquery-2.1.4.min.js',
+            'js/scripts.js',
+            filters='jsmin', output='js_all.js')
+register('js_all', js)
