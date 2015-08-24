@@ -35,3 +35,65 @@ class ProfileMethodTests(TestCase):
         self.assertContains(response, '+380937080855')
         # test if not another profile on the main page
         self.assertNotIn('Василий', response.content)
+
+
+class SaveHttpRequestTests(TestCase):
+
+    def setUp(self):
+        self.save_http = SaveHttpRequestMiddleware()
+        self.new_request = Client()
+        Requests.objects.create(request='request_1')
+        Requests.objects.create(request='request_2')
+
+    def test_request_list(self):
+        """
+        Testing request list view function
+        """
+        # get requests
+        response = client.get(reverse('task:request_list'),
+                              content_type='application/json',
+                              HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # get first request
+        request = Requests.objects.get(request='request_1')
+        # get second request
+        request_2 = Requests.objects.get(request='request_2')
+        # get nonexistent request
+        request_3 = Requests.objects.filter(request='request_3')
+        # test getting request list
+        self.assertEquals(response.status_code, 200)
+        # test first request in response content
+        self.assertContains(response, request)
+        # test second request in response content
+        self.assertContains(response, request_2)
+        # test not exist request in response content
+        self.assertNotIn(response.content, request_3)
+
+    def test_request_detail(self):
+        """
+        Testing request detail view function
+        """
+        # get first request
+        request = Requests.objects.get(request='request_1')
+        # get first request
+        response = client.get(reverse('task:request_detail',
+                                      args=(request.id, )))
+        # get nonexistent request
+        response_2 = client.get(reverse('task:request_detail',
+                                        args=(555, )))
+        # test gettings page with first profile
+        self.assertEqual(response.status_code, 200)
+        # test gettings page with nonexistent request
+        self.assertEqual(response_2.status_code, 404)
+        # test first request data on the page
+        self.assertIn(request.request, response.content)
+        # test context of the detail request
+        self.assertEqual(request, response.context['obj'])
+
+    def test_save_request(self):
+        """
+        Test SaveHttpRequestMiddleware()
+        """
+        # save request to DB
+        self.save_http.process_request(request=self.new_request)
+        # test saving request to DB
+        self.assertEqual(Requests.objects.all().count(), 3)
