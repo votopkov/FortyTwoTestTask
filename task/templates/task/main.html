@@ -13,41 +13,127 @@
     <title>Main</title>
 {% endblock %}
 {% block content %}
+    <div class="indicator"><img src="{% static 'images/indicator.gif' %}"> </div>
     <h1>42 Coffee Cups Test Assignment</h1>
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="row">
-                            <div class="col-xs-12 field"><span class="content-title">Name:</span>{{ profile.name }}</div>
-                            <div class="col-xs-12 field"><span class="content-title">Last name:</span>{{ profile.last_name }}</div>
-                            <div class="col-xs-12 field"><span class="content-title">Date of birth:</span>{{ profile.date_of_birth }}</div>
-                            <div class="col-xs-12 field"></div>
-                            <div class="col-xs-12 field bio-field"><span class="content-title">Bio:</span>{{ profile.bio|linebreaks }}</div>
-                        </div>
+            <div class="col-xs-12 main-div">
+                <div class='logged_in_greeting col-xs-12'>
+                    <div class='row'><div class='logged_in_greeting_title col-xs-10'>
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'task:update_profile' %}" method="post" id="update-profile-form" enctype="multipart/form-data">
+                            {{ user_form.id }}
+                            <div class="col-xs-6 left-column">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label >{{ user_form.name.label }}</label>
+                                    {{ user_form.name }}
+                                </div>
+                                <div class="form-group">
+                                    <label >{{ user_form.last_name.label }}</label>
+                                    {{ user_form.last_name }}
+                                </div>
+                                <div class="form-group">
+                                    <label >{{ user_form.date_of_birth.label }}</label>
+                                    {{ user_form.date_of_birth }}
+                                </div>
+                                <div class="form-group">
+                                    {{ user_form.photo }}
+                                </div>
+                                <div class="div_image_preview">
+                                    {% if user_profile.photo  %}
+                                        <img id="image_preview" width="200"  src="{{ user_profile.photo.url }}">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-xs-6 right_column">
+                                <div class="form-group">
+                                    <label >{{ user_form.email.label }}</label>
+                                    {{ user_form.email }}
+                                </div>
+                                <div class="form-group">
+                                    <label >{{ user_form.jabber.label }}</label>
+                                    {{ user_form.jabber }}
+                                </div>
+                                <div class="form-group">
+                                    <label >{{ user_form.skype.label }}</label>
+                                    {{ user_form.skype }}
+                                </div>
+                                <div class="form-group">
+                                    <label >{{ user_form.other_contacts.label }}</label>
+                                    {{ user_form.other_contacts }}
+                                </div>
+                                <div class="form-group">
+                                    <label >{{ user_form.bio.label }}</label>
+                                    {{ user_form.bio }}
+                                </div>
+                            </div>
+                            <input class="btn-group btn" type="submit" value="Save">
+                            <a class="btn-group btn"  href="#">Cancel</a>
+                        </form>
                     </div>
-                    <div class="col-xs-6 ">
-                        <div class="row">
-                            <div class="col-xs-12 field"><span class="content-title">Contacts:</span>{{ profile.contacts }}</div>
-                            <div class="col-xs-12 field"><span class="content-title">Email:</span>{{ profile.email }}</div>
-                            <div class="col-xs-12 field"><span class="content-title">Jabber:</span>{{ profile.jabber }}</div>
-                            <div class="col-xs-12 field"><span class="content-title">Skype:</span>{{ profile.skype }}</div>
-                            <div class="col-xs-12 field"><span class="content-title">Other contacts:</span>{{ profile.other_contacts|linebreaks }}</div>
-                        </div>
+                    {% else %}
+                            <div class="col-xs-6 left-column">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label >Name:</label>
+                                    {{ profile.name }}
+                                </div>
+                                <div class="form-group">
+                                    <label >Last name</label>
+                                    {{ profile.last_name }}
+                                </div>
+                                <div class="form-group">
+                                    <label >Date of birth:</label>
+                                    {{ profile.date_of_birth }}
+                                </div>
+                                <div class="div_image_preview">
+                                    {% if user_profile.photo  %}
+                                        <img id="image_preview" width="200"  src="{{ profile.photo.url }}">
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-xs-6 right_column">
+                                <div class="form-group">
+                                    <label >Email:</label>
+                                    {{ profile.email }}
+                                </div>
+                                <div class="form-group">
+                                    <label >Jabber:</label>
+                                    {{ profile.jabber }}
+                                </div>
+                                <div class="form-group">
+                                    <label >Skype:</label>
+                                    {{ profile.skype }}
+                                </div>
+                                <div class="form-group">
+                                    <label >Other contacts</label>
+                                    {{ profile.other_contacts|linebreaks }}
+                                </div>
+                                <div class="form-group">
+                                    <label >Bio</label>
+                                    {{ profile.bio|linebreaks }}
+                                </div>
+                            </div>
+                        {% if user.is_authenticated %}
+                            <input class="btn-group btn" type="submit" value="Save">
+                            <a class="btn-group btn"  href="#">Cancel</a>
+                        {% endif %}
+                        </form>
                     </div>
-                </div>
+                {% endif %}
+                    {% if user.is_authenticated %}
+                        <div class='col-xs-2'><a user_id="{{ user_profile.id }}" onclick="logout()" id="logout" href='#'>Logout</a></div></div></div>
+                    {% else %}
+                        <div class='col-xs-2'><a  href='{% url 'task:login' %}'>Login</a></div></div></div>
+                    {% endif %}
                 <div class="col-xs-12">
                     <div class="row">
                         <div class="col-xs-12 hr"></div>
                         <div class="col-xs-3">
-                            <a id="requests" href="#">requests</a>
+                            <a id="requests" href="{% url 'task:request_list' %}">requests</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-12 result">
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
