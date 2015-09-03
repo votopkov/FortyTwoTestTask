@@ -42,8 +42,6 @@ class ProfileMethodTests(TestCase):
 class SaveHttpRequestTests(TestCase):
 
     def setUp(self):
-        self.save_http = SaveHttpRequestMiddleware()
-        self.new_request = Client()
         Requests.objects.create(request='request_1')
         Requests.objects.create(request='request_2')
 
@@ -92,6 +90,9 @@ class SaveHttpRequestTests(TestCase):
         self.assertEqual(request, response.context['obj'])
 
     def test_save_request(self):
+        # create client and savehttpr... instance
+        self.save_http = SaveHttpRequestMiddleware()
+        self.new_request = Client()
         """
         Test SaveHttpRequestMiddleware()
         """
