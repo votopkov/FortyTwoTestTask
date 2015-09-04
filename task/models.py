@@ -55,8 +55,10 @@ class SavedSignals(models.Model):
 @receiver(pre_save, sender=Profile)
 @disable_for_loaddata
 def save_profile(instance, **kwargs):
-    if instance.id == None:
-        save_signals = SavedSignals(title=instance.__class__.__name__, status='Created')
+    if instance.id is None:
+        save_signals = SavedSignals(
+            title=instance.__class__.__name__,
+            status='Created')
         save_signals.save()
     else:
         profile_obj = Profile.objects.get(id=instance.id)
@@ -64,17 +66,22 @@ def save_profile(instance, **kwargs):
             profile_field = getattr(profile_obj, field)
             instance_field = getattr(instance, field)
             if profile_field != instance_field:
-                save_signals = SavedSignals(title=instance.__class__.__name__, status='Updated')
+                save_signals = SavedSignals(
+                    title=instance.__class__.__name__,
+                    status='Updated')
                 save_signals.save()
                 break
 
         else:
-            save_signals = SavedSignals(title=instance.__class__.__name__, status='Saved')
+            save_signals = SavedSignals(
+                title=instance.__class__.__name__,
+                status='Saved')
             save_signals.save()
-
 
 
 @receiver(pre_delete, sender=Profile)
 def delete_profile(instance, **kwargs):
-    save_signals = SavedSignals(title=instance.__class__.__name__, status='Deleted')
+    save_signals = SavedSignals(
+        title=instance.__class__.__name__,
+        status='Deleted')
     save_signals.save()

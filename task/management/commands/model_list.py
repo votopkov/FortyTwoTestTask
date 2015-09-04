@@ -7,6 +7,7 @@ import time
 
 filename = BASE_DIR + "/" + time.strftime("%d-%m-%Y") + ".dat"
 
+
 def count_instances():
     result = {}
     for ct in ContentType.objects.all():
@@ -17,16 +18,16 @@ def count_instances():
     return result
 
 
-
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('--stderr-tee',
+        make_option(
+            '--stderr-tee',
             action='store_true',
             dest='tee',
             default=False,
             help='duplicate output to stderr'),
-
-        make_option('--stderr-prefix',
+        make_option(
+            '--stderr-prefix',
             action="store",
             type="string",
             dest='prefix',
@@ -37,7 +38,7 @@ class Command(BaseCommand):
     help = 'Print all project models and the count of objects in every model'
 
     def handle(self, *args, **kwargs):
-        target = open(filename, 'w') #
+        target = open(filename, 'w')
         for k, v in count_instances().items():
             line = k + "  " + str(v) + "\n"
             target.write(line)

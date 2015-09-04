@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
+from django.core.management import call_command
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase
@@ -7,6 +8,10 @@ from models import Profile, Requests
 from django.conf import settings
 from http_request import SaveHttpRequestMiddleware
 from forms import ProfileForm, LoginForm
+from django.utils.six import StringIO
+from django.template import Template, Context
+from task.templatetags.task_tags import get_edit_admin_page
+
 
 client = Client()
 
@@ -50,6 +55,19 @@ class ProfileMethodTests(TestCase):
         self.assertEqual(response.status_code, 200)
         # test form exist
         self.assertContains(response, 'Save')
+
+    def test_command_output(self):
+        out = StringIO()
+        call_command('model_list', stdout=out)
+        self.assertIn('task.models.Requests', out.getvalue())
+
+    def test_tag(self):
+        self.profile = Profile.objects.get(id=settings.DEFAULT_PROFILE_ID)
+        self.template = Template("{% load task_tags %}"
+                                 " {% get_edit_admin_page profile.id %}")
+        rendered = self.template.render(Context({'profile': self.profile}))
+        self.assertIn(get_edit_admin_page(settings.DEFAULT_PROFILE_ID),
+                      rendered)
 
 
 class SaveHttpRequestTests(TestCase):
