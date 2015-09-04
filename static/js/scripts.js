@@ -16,6 +16,9 @@ function logout() {
         success: function(msg) {
             $('.indicator').css('display', 'none');
             $('.main-div').html('You have already logout <a href="/"> Go to main</a>');
+            $('#logout').replaceWith("<a  href='{% url 'task:login' %}'>Login</a>");
+            $('.result, .hr, #requests').replaceWith(" ");
+
         }
     });
 }
@@ -32,13 +35,9 @@ $(document).ready(function() {
     // get 10 requests
     $(document).ready(function() {
         load_requests = function () {
-            $('.result').html(' ');
             $.ajax({
                 type: 'GET',
                 url: '/request_list/',
-                error: function (xhr, textStatus) {
-                    alert([xhr.status, textStatus]);
-                },
                 success: function (msg) {
                     var result = "";
                     var i = 0;
@@ -63,7 +62,7 @@ $(document).ready(function() {
                         $('.result').replaceWith('<div class="col-xs-12 result">'
                             + result + '</div>');
                     });
-                    setTimeout(load_requests, 3000);
+                    setTimeout(load_requests, 5000);
                 }
             });
         };

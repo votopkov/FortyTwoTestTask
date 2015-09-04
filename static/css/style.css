@@ -15,7 +15,7 @@ h1 {
     background:black;
 }
 .field {
-    margin-bottom:10px;
+    margin-bottom:20px;
 }
 
 .bio-field {
@@ -73,7 +73,7 @@ h1 {
     text-align: center;
 }
 
-#update-profile-form {
+#update-profile-form, .user-data {
     margin-bottom: 20px;
     margin-top: 20px;
 }
@@ -112,4 +112,8 @@ h1 {
     font-weight: bold;
     margin-top: 15px;
     margin-bottom: 15px;
+}
+
+.authenticated-div {
+    margin-top:20px;
 }
