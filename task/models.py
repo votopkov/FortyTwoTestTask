@@ -36,9 +36,10 @@ class Requests(models.Model):
     title = models.CharField(max_length=250, default='Http_request')
     request = models.TextField()
     pub_date = models.DateTimeField(auto_now_add=True)
+    priority = models.IntegerField(default=0)
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ['-priority', '-pub_date']
 
     def __unicode__(self):
         return self.title

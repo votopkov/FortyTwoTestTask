@@ -105,6 +105,7 @@ class SaveHttpRequestTests(TestCase):
     def setUp(self):
         Requests.objects.create(request='request_1')
         Requests.objects.create(request='request_2')
+        Requests.objects.create(request='request_3')
         User.objects.create_user('admin', ' ', 'admin')
 
     def test_request_list(self):
@@ -176,7 +177,14 @@ class SaveHttpRequestTests(TestCase):
         # save request to DB
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
-        self.assertEqual(Requests.objects.all().count(), 3)
+        self.assertEqual(Requests.objects.all().count(), 4)
+
+    def test_priority_field(self):
+        request = Requests.objects.all().last()
+        request.priority = 25
+        request.save()
+        request_2 = Requests.objects.all().last()
+        self.assertNotEqual(request.id, request_2.id)
 
 
 class FormTests(TestCase):
