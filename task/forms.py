@@ -45,10 +45,12 @@ class ProfileForm(forms.ModelForm):
                             widget=forms.TextInput(attrs={'class':
                                                           'form-control'}))
     other_contacts = forms.CharField(max_length=1000,
+                                     required=False,
                                      widget=forms.Textarea(
                                          attrs={'class':
                                                 'form-control'}))
     bio = forms.CharField(max_length=1000,
+                          required=False,
                           widget=forms.Textarea(
                               attrs={'class': 'form-control'}))
 

@@ -15,11 +15,11 @@ class Profile(models.Model):
                               height_field='url_height',
                               width_field='url_width',
                               blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True, default=" ")
     email = models.EmailField(blank=True, null=True)
     jabber = models.CharField(max_length=250, blank=True, null=True)
     skype = models.CharField(max_length=250, blank=True, null=True)
-    other_contacts = models.TextField(blank=True, null=True, default="")
+    other_contacts = models.TextField(blank=True, null=True, default=" ")
 
     class Meta:
         verbose_name = "Profile"

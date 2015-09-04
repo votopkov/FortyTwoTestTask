@@ -8,7 +8,9 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Requests'
         pass
+
 
     def backwards(self, orm):
         # Deleting model 'Requests'
@@ -54,14 +56,14 @@ class Migration(SchemaMigration):
         },
         u'task.profile': {
             'Meta': {'object_name': 'Profile'},
-            'bio': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'bio': ('django.db.models.fields.TextField', [], {'default': "' '", 'null': 'True', 'blank': 'True'}),
             'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'jabber': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'last_name': ('django.db.models.fields.CharField', [], {'default': "'Eneter your last name'", 'max_length': '250'}),
             'name': ('django.db.models.fields.CharField', [], {'default': "'Eneter your name'", 'max_length': '250'}),
-            'other_contacts': ('django.db.models.fields.TextField', [], {'default': "''", 'null': 'True', 'blank': 'True'}),
+            'other_contacts': ('django.db.models.fields.TextField', [], {'default': "' '", 'null': 'True', 'blank': 'True'}),
             'photo': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'skype': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'url_height': ('django.db.models.fields.PositiveIntegerField', [], {'default': '200'}),

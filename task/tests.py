@@ -6,6 +6,7 @@ from django.test import TestCase
 from models import Profile, Requests
 from django.conf import settings
 from http_request import SaveHttpRequestMiddleware
+from forms import ProfileForm, LoginForm
 
 client = Client()
 
@@ -15,6 +16,7 @@ class ProfileMethodTests(TestCase):
     def setUp(self):
         Profile.objects.create(name=u"Владимир", last_name=u"Отопков")
         Profile.objects.create(name=u"Василий", last_name=u"Петров")
+        User.objects.create_user('admin', ' ', 'admin')
 
     def test_enter_main_page(self):
         """
@@ -37,13 +39,25 @@ class ProfileMethodTests(TestCase):
         # test if not another profile on the main page
         self.assertNotIn('Василий', response.content)
 
+    def test_main_page_login_in_user(self):
+        """
+        Testing profile update form
+        """
+        self.client.login(username='admin', password='admin')
+        # get page
+        response = self.client.get(reverse('task:index'))
+        # if index page exists
+        self.assertEqual(response.status_code, 200)
+        # test form exist
+        self.assertContains(response, 'Save')
+
 
 class SaveHttpRequestTests(TestCase):
 
     def setUp(self):
         Requests.objects.create(request='request_1')
         Requests.objects.create(request='request_2')
-        self.user = User.objects.create_user('admin', ' ', 'admin')
+        User.objects.create_user('admin', ' ', 'admin')
 
     def test_request_list(self):
         """
@@ -104,14 +118,78 @@ class SaveHttpRequestTests(TestCase):
         self.assertEqual(request, response.context['obj'])
 
     def test_save_request(self):
+        """
+        Test SaveHttpRequestMiddleware()
+        """
         # create client and savehttpr... instance
         self.save_http = SaveHttpRequestMiddleware()
         self.new_request = Client()
         self.new_request.login(username='admin', password='admin')
-        """
-        Test SaveHttpRequestMiddleware()
-        """
         # save request to DB
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
         self.assertEqual(Requests.objects.all().count(), 3)
+
+
+class FormTests(TestCase):
+
+    def test_profile_form(self):
+        # initial data to from
+        form_data = {
+            'id': 1,
+            'name': 'admin',
+            'last_name': 'admin',
+            'date_of_birth': '1993-11-29',
+            'email': 'mail@mail.ua',
+            'jabber': 'jabber@jabber.ua',
+            'skype': 'skype',
+        }
+        # initial data to form (not valid)
+        failed_form_data = {
+            'id': 2,
+            'name': 'name',
+            'last_name': 'last_name'
+        }
+        # set initial data to from
+        form = ProfileForm(data=form_data)
+        # set failed data to form
+        failed_form = ProfileForm(data=failed_form_data)
+        # test if form valid
+        self.assertTrue(form.is_valid())
+        # test if form invalid
+        self.assertFalse(failed_form.is_valid())
+
+    def test_login_form(self):
+        # initial data to from
+        form_data = {
+            'username': 'admin',
+            'password': 'password'
+        }
+        # length is less than 3(username)
+        failed_min_length = {
+            'username': 'ad',
+            'password': '12345'
+        }
+        # length is getter than 100(password)
+        failed_max_length = {
+            'username': 'admin' * 200,
+            'password': 'assd'
+        }
+        # no data
+        failed_no_input = {
+            'username': '',
+            'password': ''
+        }
+        # set valid initial data
+        form = LoginForm(data=form_data)
+        # not valid min length of username field
+        form_min_length = LoginForm(data=failed_min_length)
+        # not valid max length of username field
+        form_max_length = LoginForm(data=failed_max_length)
+        # no data in form
+        form_no_data = LoginForm(data=failed_no_input)
+        # test form
+        self.assertTrue(form.is_valid())
+        self.assertFalse(form_min_length.is_valid())
+        self.assertFalse(form_max_length.is_valid())
+        self.assertFalse(form_no_data.is_valid())
