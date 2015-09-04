@@ -69,6 +69,9 @@ class ProfileMethodTests(TestCase):
         self.assertIn(get_edit_admin_page(settings.DEFAULT_PROFILE_ID),
                       rendered)
 
+    def test_signals(self):
+        pass
+
 
 class SaveHttpRequestTests(TestCase):
 
