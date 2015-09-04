@@ -11,6 +11,7 @@ from forms import ProfileForm, LoginForm
 from django.utils.six import StringIO
 from django.template import Template, Context
 from task.templatetags.task_tags import get_edit_admin_page
+from models import SavedSignals
 
 
 client = Client()
@@ -57,11 +58,17 @@ class ProfileMethodTests(TestCase):
         self.assertContains(response, 'Save')
 
     def test_command_output(self):
+        """
+        Testing command
+        """
         out = StringIO()
         call_command('model_list', stdout=out)
         self.assertIn('task.models.Requests', out.getvalue())
 
     def test_tag(self):
+        """
+        Testing signals
+        """
         self.profile = Profile.objects.get(id=settings.DEFAULT_PROFILE_ID)
         self.template = Template("{% load task_tags %}"
                                  " {% get_edit_admin_page profile.id %}")
@@ -70,7 +77,27 @@ class ProfileMethodTests(TestCase):
                       rendered)
 
     def test_signals(self):
-        pass
+        """
+        Testing custom tag get_edit_admin_page
+        """
+        # get record about Profile
+        save_profile = SavedSignals.objects.last()
+        # test status
+        self.assertEqual(save_profile.status, 'Created')
+        # get profile and update last name
+        profile = Profile.objects.get(id=settings.DEFAULT_PROFILE_ID)
+        profile.last_name = "update"
+        profile.save()
+        # get record about profile
+        update_profile = SavedSignals.objects.last()
+        # test status
+        self.assertEqual(update_profile.status, 'Updated')
+        # delete profile
+        profile.delete()
+        # get record about profile
+        delete_profile = SavedSignals.objects.last()
+        # test status
+        self.assertEqual(delete_profile.status, 'Deleted')
 
 
 class SaveHttpRequestTests(TestCase):
