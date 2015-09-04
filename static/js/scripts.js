@@ -1,7 +1,6 @@
  // get 10 requests
  $(document).ready(function() {
      load_requests = function () {
-         $('.result').html(' ');
          $.ajax({
              type: 'GET',
              url: '/request_list/',

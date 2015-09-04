@@ -8,25 +8,22 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Requests'
-        db.create_table(u'task_requests', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(default='Http_request', max_length=250)),
-            ('request', self.gf('django.db.models.fields.TextField')()),
-            ('pub_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal(u'task', ['Requests'])
+        # Adding field 'Profile.contacts'
+        db.add_column(u'task_profile', 'contacts',
+                      self.gf('django.db.models.fields.CharField')(max_length=250, null=True, blank=True),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'Requests'
-        db.delete_table(u'task_requests')
+        # Deleting field 'Profile.contacts'
+        db.delete_column(u'task_profile', 'contacts')
 
 
     models = {
         'task.profile': {
             'Meta': {'object_name': 'Profile'},
             'bio': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'contacts': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
