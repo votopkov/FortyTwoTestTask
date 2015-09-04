@@ -17,6 +17,7 @@ def count_instances():
     return result
 
 
+
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--stderr-tee',
@@ -38,15 +39,14 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         target = open(filename, 'w') #
         for k, v in count_instances().items():
+            line = k + "  " + str(v) + "\n"
+            target.write(line)
             row = '%s\t%d' % (k, v)
-            self.stdout.write('%s\n' % row)
-            target.write(str(self.stdout.write('%s\n' % row)))
+            self.stdout.write(row + "\n")
             if kwargs.get('tee'):
                 prefix = kwargs.get('prefix')
                 if prefix:
-                    target.write(str(self.stderr.write('%s %s\n' % (prefix, row))))
                     self.stderr.write('%s %s\n' % (prefix, row))
                 else:
-                    target.write(str(self.stderr.write('%s\n' % row)))
                     self.stderr.write('%s\n' % row)
         target.close()
