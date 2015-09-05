@@ -1,0 +1,10 @@
+django.contrib.sessions.models.Session  0
+task.models.Requests  0
+task.models.Profile  2
+task.models.SavedSignals  2
+django.contrib.auth.models.Group  0
+django.contrib.auth.models.User  1
+south.models.MigrationHistory  2
+django.contrib.auth.models.Permission  30
+django.contrib.admin.models.LogEntry  0
+django.contrib.contenttypes.models.ContentType  10
