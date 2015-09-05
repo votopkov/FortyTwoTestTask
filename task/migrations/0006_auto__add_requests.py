@@ -11,8 +11,7 @@ class Migration(SchemaMigration):
         pass
 
     def backwards(self, orm):
-        # Deleting model 'Requests'
-        db.delete_table(u'task_requests')
+        pass
 
 
     models = {

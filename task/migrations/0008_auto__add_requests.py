@@ -8,19 +8,11 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Requests'
-        db.create_table(u'task_requests', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(default='Http_request', max_length=250)),
-            ('request', self.gf('django.db.models.fields.TextField')()),
-            ('pub_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal(u'task', ['Requests'])
+        pass
 
 
     def backwards(self, orm):
-        # Deleting model 'Requests'
-        db.delete_table(u'task_requests')
+        pass
 
 
     models = {
@@ -75,13 +67,6 @@ class Migration(SchemaMigration):
             'url_height': ('django.db.models.fields.PositiveIntegerField', [], {'default': '200'}),
             'url_width': ('django.db.models.fields.PositiveIntegerField', [], {'default': '200'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': u"orm['auth.User']"})
-        },
-        u'task.requests': {
-            'Meta': {'ordering': "['-pub_date']", 'object_name': 'Requests'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'pub_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'request': ('django.db.models.fields.TextField', [], {}),
-            'title': ('django.db.models.fields.CharField', [], {'default': "'Http_request'", 'max_length': '250'})
         }
     }
 
