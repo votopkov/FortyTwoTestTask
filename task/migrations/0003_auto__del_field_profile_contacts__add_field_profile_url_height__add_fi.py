@@ -8,15 +8,47 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Requests.priority'
-        db.add_column(u'task_requests', 'priority',
-                      self.gf('django.db.models.fields.IntegerField')(default=0),
+        # Deleting field 'Profile.contacts'
+        db.delete_column(u'task_profile', 'contacts')
+
+        # Adding field 'Profile.url_height'
+        db.add_column(u'task_profile', 'url_height',
+                      self.gf('django.db.models.fields.PositiveIntegerField')(default=200),
+                      keep_default=False)
+
+        # Adding field 'Profile.url_width'
+        db.add_column(u'task_profile', 'url_width',
+                      self.gf('django.db.models.fields.PositiveIntegerField')(default=200),
+                      keep_default=False)
+
+        # Adding field 'Profile.user'
+        db.add_column(u'task_profile', 'user',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['auth.User']),
+                      keep_default=False)
+
+        # Adding field 'Profile.photo'
+        db.add_column(u'task_profile', 'photo',
+                      self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'Requests.priority'
-        db.delete_column(u'task_requests', 'priority')
+        # Adding field 'Profile.contacts'
+        db.add_column(u'task_profile', 'contacts',
+                      self.gf('django.db.models.fields.CharField')(default='Enter your contacts', max_length=250),
+                      keep_default=False)
+
+        # Deleting field 'Profile.url_height'
+        db.delete_column(u'task_profile', 'url_height')
+
+        # Deleting field 'Profile.url_width'
+        db.delete_column(u'task_profile', 'url_width')
+
+        # Deleting field 'Profile.user'
+        db.delete_column(u'task_profile', 'user_id')
+
+        # Deleting field 'Profile.photo'
+        db.delete_column(u'task_profile', 'photo')
 
 
     models = {
@@ -73,18 +105,11 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.ForeignKey', [], {'default': '1', 'to': u"orm['auth.User']"})
         },
         u'task.requests': {
-            'Meta': {'ordering': "['-priority']", 'object_name': 'Requests'},
+            'Meta': {'ordering': "['-pub_date']", 'object_name': 'Requests'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'priority': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'pub_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'request': ('django.db.models.fields.TextField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'default': "'Http_request'", 'max_length': '250'})
-        },
-        u'task.savedsignals': {
-            'Meta': {'object_name': 'SavedSignals'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'status': ('django.db.models.fields.CharField', [], {'max_length': '250'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '250'})
         }
     }
 
