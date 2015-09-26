@@ -2,14 +2,8 @@
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase
-<<<<<<< HEAD
-from models import Profile, Requests
-from django.conf import settings
-=======
-from django.test import RequestFactory
 from models import Profile
 from models import Requests
->>>>>>> t1_show_data
 from http_request import SaveHttpRequestMiddleware
 
 client = Client()
