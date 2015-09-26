@@ -5,7 +5,6 @@ from django.test import TestCase
 from django.test import RequestFactory
 from models import Profile
 from models import Requests
-from django.conf import settings
 from http_request import SaveHttpRequestMiddleware
 client = Client()
 
@@ -27,7 +26,7 @@ class ProfileMethodTests(TestCase):
         # if index page exists
         self.assertEqual(response.status_code, 200)
         # get profile
-        self.profile = Profile.objects.get(id=settings.DEFAULT_PROFILE_ID)
+        self.profile = Profile.objects.first()
         self.assertEqual(response.context['profile'], self.profile)
         # test if not another profile on index
         self.assertNotEqual(response.context['profile'],
