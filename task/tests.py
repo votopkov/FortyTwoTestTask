@@ -3,7 +3,6 @@ from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase
 from models import Profile, Requests
-from django.conf import settings
 from http_request import SaveHttpRequestMiddleware
 
 client = Client()
@@ -14,7 +13,8 @@ class ProfileMethodTests(TestCase):
     def setUp(self):
         Profile.objects.create(name=u"Владимир", last_name=u"Отопков",
                                contacts=u"+380937080855")
-        Profile.objects.create(name=u"Василий", last_name=u"Петров")
+        Profile.objects.create(name=u"Василий", last_name=u"Петров",
+                               contacts=u"+380937080855")
 
     def test_enter_main_page(self):
         """
@@ -26,7 +26,7 @@ class ProfileMethodTests(TestCase):
         # if index page exists
         self.assertEqual(response.status_code, 200)
         # get profile
-        self.profile = Profile.objects.get(id=settings.DEFAULT_PROFILE_ID)
+        self.profile = Profile.objects.first()
         self.assertEqual(response.context['profile'], self.profile)
         # test if not another profile on index
         self.assertNotEqual(response.context['profile'],
@@ -49,8 +49,17 @@ class SaveHttpRequestTests(TestCase):
         """
         Testing request list view function
         """
+        # get request_list
+        response = client.get(reverse('task:request_list'))
+        # test entering the page
+        self.assertEquals(response.status_code, 200)
+
+    def test_request_list_ajax(self):
+        """
+        Testing request list view function
+        """
         # get requests
-        response = client.get(reverse('task:request_list'),
+        response = client.get(reverse('task:request_list_ajax'),
                               content_type='application/json',
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         # get first request
@@ -100,3 +109,16 @@ class SaveHttpRequestTests(TestCase):
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
         self.assertEqual(Requests.objects.all().count(), 3)
+
+
+class SaveRequestAdditionalTest(TestCase):
+    fixtures = ['initial_data.json']
+
+    def test_last_requests(self):
+        """
+        Testing the requests in the right order
+        """
+        # test count of requests in db
+        self.assertEqual(Requests.objects.all().count(), 15)
+        # test if new request is the first
+        self.assertEqual(Requests.objects.first().id, 15)
