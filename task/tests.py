@@ -15,28 +15,62 @@ class ProfileMethodTests(TestCase):
                                contacts=u"+380937080855")
         Profile.objects.create(name=u"Василий", last_name=u"Петров",
                                contacts=u"+380937080855")
+        # get main page
+        self.response = self.client.get(reverse('task:index'))
 
     def test_enter_main_page(self):
         """
-        Testing my profile shown on the main page
-        Testing one profile if two
-        Testing unicode
+        Test entering main page
         """
-        response = self.client.get(reverse('task:index'))
         # if index page exists
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_profile(self):
+        """
+        Testing profile shown in the page
+        """
         # get profile
-        self.profile = Profile.objects.first()
-        self.assertEqual(response.context['profile'], self.profile)
-        # test if not another profile on index
-        self.assertNotEqual(response.context['profile'],
-                            Profile.objects.get(id=2))
+        profile = Profile.objects.first()
+        self.assertEqual(self.response.context['profile'], profile)
         # test profile data exist on the main page
-        self.assertContains(response, u'Отопков')
-        self.assertContains(response, u'Владимир')
-        self.assertContains(response, '+380937080855')
-        # test if not another profile on the main page
-        self.assertNotIn('Василий', response.content)
+        self.assertContains(self.response, u'Отопков')
+        self.assertContains(self.response, u'Владимир')
+        self.assertContains(self.response, '+380937080855')
+
+    def test_non_another_profile(self):
+        """
+        Test if exist another profile in the page
+        """
+        # test if not another profile on index
+        self.assertNotEqual(self.response.context['profile'],
+                            Profile.objects.get(id=2))
+        self.assertNotIn('Василий', self.response.content)
+
+
+class ProfileNoDataMethodTests(TestCase):
+
+    def setUp(self):
+        # get main page
+        self.response = self.client.get(reverse('task:index'))
+
+    def test_enter_main_page(self):
+        """
+        Test entering main page
+        """
+        # if index page exists
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_profile(self):
+        """
+        Testing profile shown in the page
+        """
+        # get profile
+        profile = Profile.objects.all().count()
+        self.assertEqual(profile, 0)
+        # test profile data exist on the main page
+        self.assertNotContains(self.response, u'Отопков')
+        self.assertNotContains(self.response, u'Владимир')
+        self.assertNotContains(self.response, '+380937080855')
 
 
 class SaveHttpRequestTests(TestCase):
@@ -99,16 +133,48 @@ class SaveHttpRequestTests(TestCase):
         self.assertEqual(request, response.context['obj'])
 
     def test_save_request(self):
-        # create client and savehttpr... instance
-        self.save_http = SaveHttpRequestMiddleware()
-        self.new_request = Client()
         """
         Test SaveHttpRequestMiddleware()
         """
+        # create client and savehttpr... instance
+        self.save_http = SaveHttpRequestMiddleware()
+        self.new_request = Client()
         # save request to DB
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
         self.assertEqual(Requests.objects.all().count(), 3)
+
+
+class SaveHttpRequestNoDataTests(TestCase):
+
+    def test_request_list(self):
+        """
+        Testing request list view function
+        """
+        # get request_list
+        response = client.get(reverse('task:request_list'))
+        # test entering the page
+        self.assertEquals(response.status_code, 200)
+
+    def test_request_list_ajax(self):
+        """
+        Testing request list view function
+        """
+        # get requests
+        response = client.get(reverse('task:request_list_ajax'),
+                              content_type='application/json',
+                              HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEquals(response.status_code, 200)
+
+    def test_request_detail(self):
+        """
+        Testing request detail view function
+        """
+        # get request
+        response = client.get(reverse('task:request_detail',
+                                      args=(2, )))
+        # test gettings page with unexisted request
+        self.assertEqual(response.status_code, 404)
 
 
 class SaveRequestAdditionalTest(TestCase):
