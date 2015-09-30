@@ -3,10 +3,7 @@
      load_requests = function () {
          $.ajax({
              type: 'GET',
-             url: '/request_list/',
-             error: function (xhr, textStatus) {
-                 alert([xhr.status, textStatus]);
-             },
+             url: '/request_list_ajax/',
              success: function (msg) {
                  var result = "";
                  var i = 0;
@@ -16,7 +13,7 @@
 
                          } else {
                              if (i==0) {
-                                 document.title=val + '-' + msg[key]['pk'] + " Main";
+                                 document.title=val + '-' + msg[key]['pk'];
                                  result += val + '-' + msg[key]['pk'] + ' ' + '<a href=\'/request_detail/' + msg[key]['pk'] + '/\'>click here to see details</a> <br>';
                              } else {
 

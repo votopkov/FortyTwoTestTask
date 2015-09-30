@@ -13,6 +13,10 @@ def main(request):
 
 
 def request_list(request):
+    return render(request, 'task/request_list.html')
+
+
+def request_list_ajax(request):
     if request.is_ajax():
         data = serializers.serialize("json", Requests.objects.all()[:10])
         return HttpResponse(data, content_type="application/json")
