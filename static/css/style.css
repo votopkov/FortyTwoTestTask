@@ -21,3 +21,7 @@ h1 {
 .bio-field {
     margin-top:20px;
 }
+
+.table th {
+   text-align: center;
+}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.urlresolvers import reverse
 from django.test import Client
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from models import Profile, Requests
 from http_request import SaveHttpRequestMiddleware
 
@@ -100,16 +100,12 @@ class SaveHttpRequestTests(TestCase):
         request = Requests.objects.get(request='request_1')
         # get second request
         request_2 = Requests.objects.get(request='request_2')
-        # get nonexistent request
-        request_3 = Requests.objects.filter(request='request_3')
         # test getting request list
         self.assertEquals(response.status_code, 200)
         # test first request in response content
         self.assertContains(response, request)
         # test second request in response content
         self.assertContains(response, request_2)
-        # test not exist request in response content
-        self.assertNotIn(response.content, request_3)
 
     def test_request_detail(self):
         """
@@ -138,7 +134,7 @@ class SaveHttpRequestTests(TestCase):
         """
         # create client and savehttpr... instance
         self.save_http = SaveHttpRequestMiddleware()
-        self.new_request = Client()
+        self.new_request = RequestFactory().get('/')
         # save request to DB
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
@@ -188,3 +184,16 @@ class SaveRequestAdditionalTest(TestCase):
         self.assertEqual(Requests.objects.all().count(), 215)
         # test if new request is the first
         self.assertEqual(Requests.objects.first().id, 215)
+
+    def test_last_ten_requests(self):
+        """
+        Test getting last ten requests(215 in db now)
+        """
+        i = 0
+        while i < 10:
+            Requests.objects.create(request='test_request')
+            i += 1
+        # test if ten requests added to db
+        self.assertEqual(Requests.objects.all().count(), 225)
+        # test if new request is the first
+        self.assertEqual(Requests.objects.first().id, 225)

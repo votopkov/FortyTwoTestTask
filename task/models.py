@@ -26,6 +26,7 @@ class Profile(models.Model):
 class Requests(models.Model):
     title = models.CharField(max_length=250, default='Http_request')
     request = models.TextField()
+    path = models.CharField(max_length=250, blank=True, null=True)
     pub_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
