@@ -48,9 +48,6 @@ $(document).ready(function() {
         });
     };
     load_requests();
-    $(document).click(function (){
-        document.title = "Request list";
-    });
     $(document).hover(function (){
         document.title = "Request list";
     });
