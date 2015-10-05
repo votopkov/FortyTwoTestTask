@@ -50,5 +50,6 @@ $(document).ready(function() {
     load_requests();
     $(document).hover(function (){
         document.title = "Request list";
+        $('body').attr('new_request', 0)
     });
 });
