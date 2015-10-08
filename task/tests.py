@@ -12,10 +12,8 @@ client = Client()
 class ProfileMethodTests(TestCase):
 
     def setUp(self):
-        Profile.objects.create(name=u"Владимир", last_name=u"Отопков",
-                               contacts=u"+380937080855")
-        Profile.objects.create(name=u"Василий", last_name=u"Петров",
-                               contacts=u"+380937080855")
+        Profile.objects.create(name=u"Владимир", last_name=u"Отопков")
+        Profile.objects.create(name=u"Василий", last_name=u"Петров")
         # get main page
         self.response = self.client.get(reverse('task:index'))
 
@@ -36,7 +34,6 @@ class ProfileMethodTests(TestCase):
         # test profile data exist on the main page
         self.assertContains(self.response, u'Отопков')
         self.assertContains(self.response, u'Владимир')
-        self.assertContains(self.response, '+380937080855')
 
     def test_non_another_profile(self):
         """
@@ -71,7 +68,6 @@ class ProfileNoDataMethodTests(TestCase):
         # test profile data exist on the main page
         self.assertNotContains(self.response, u'Отопков')
         self.assertNotContains(self.response, u'Владимир')
-        self.assertNotContains(self.response, '+380937080855')
 
 
 class SaveHttpRequestTests(TestCase):
