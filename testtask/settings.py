@@ -13,8 +13,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 FIXTURE_DIRS = (os.path.join(BASE_DIR, '/fixtures/'))
 
-DEFAULT_PROFILE_ID = 1
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -72,15 +70,17 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 DEFAULT_CHARSET = 'utf-8'
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/

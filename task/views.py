@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http.response import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
-from django.conf import settings
 from models import Profile
 from models import Requests
 from forms import LoginForm, ProfileForm
@@ -12,7 +11,7 @@ import json
 
 
 def main(request):
-    profile = Profile.objects.get(id=settings.DEFAULT_PROFILE_ID)
+    profile = Profile.objects.first()
     user_form = ProfileForm(instance=profile)
     context = dict(profile=profile, user_form=user_form)
     return render(request, 'task/main.html', context)
@@ -20,6 +19,11 @@ def main(request):
 
 @login_required(login_url='/login/')
 def request_list(request):
+    return render(request, 'task/request_list.html')
+
+
+@login_required(login_url='/login/')
+def request_list_ajax(request):
     if request.is_ajax():
         data = serializers.serialize("json", Requests.objects.all()[:10])
         return HttpResponse(data, content_type="application/json")

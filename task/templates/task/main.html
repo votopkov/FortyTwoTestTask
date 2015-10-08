@@ -113,19 +113,18 @@
                                     </div>
                                     </div>
                                 {% endif %}
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-12 hr"></div>
+                                <div class="col-xs-3">
+                                    <a href="{% url 'task:request_list' %}">requests</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-xs-12">
-        <div class="row">
-            <div class="col-xs-12 hr"></div>
-            <div class="col-xs-3">
-                <a id="requests" href="#">requests</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-12 result">
-    </div>
+
 {% endblock %}

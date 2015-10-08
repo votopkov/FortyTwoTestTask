@@ -2,9 +2,8 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
 from models import Profile, Requests
-from django.conf import settings
 from http_request import SaveHttpRequestMiddleware
 from forms import ProfileForm, LoginForm
 
@@ -14,42 +13,75 @@ client = Client()
 class ProfileMethodTests(TestCase):
 
     def setUp(self):
+        User.objects.create_user('admin', ' ', 'admin')
         Profile.objects.create(name=u"Владимир", last_name=u"Отопков")
         Profile.objects.create(name=u"Василий", last_name=u"Петров")
-        User.objects.create_user('admin', ' ', 'admin')
+        # get main page
+        self.response = self.client.get(reverse('task:index'))
 
     def test_enter_main_page(self):
         """
-        Testing my profile shown on the main page
-        Testing one profile if two
-        Testing unicode
+        Test entering main page
         """
-        response = self.client.get(reverse('task:index'))
         # if index page exists
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_profile(self):
+        """
+        Testing profile shown in the page
+        """
         # get profile
-        self.profile = Profile.objects.get(id=settings.DEFAULT_PROFILE_ID)
-        self.assertEqual(response.context['profile'], self.profile)
-        # test if not another profile on index
-        self.assertNotEqual(response.context['profile'],
-                            Profile.objects.get(id=2))
+        profile = Profile.objects.first()
+        self.assertEqual(self.response.context['profile'], profile)
         # test profile data exist on the main page
-        self.assertContains(response, u'Отопков')
-        self.assertContains(response, u'Владимир')
-        # test if not another profile on the main page
-        self.assertNotIn('Василий', response.content)
+        self.assertContains(self.response, u'Отопков')
+        self.assertContains(self.response, u'Владимир')
+
+    def test_non_another_profile(self):
+        """
+        Test if exist another profile in the page
+        """
+        # test if not another profile on index
+        self.assertNotEqual(self.response.context['profile'],
+                            Profile.objects.get(id=2))
+        self.assertNotIn('Василий', self.response.content)
+
+
+class ProfileNoDataMethodTests(TestCase):
+
+    def setUp(self):
+        # get main page
+        self.response = self.client.get(reverse('task:index'))
+
+    def test_enter_main_page(self):
+        """
+        Test entering main page
+        """
+        # if index page exists
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_profile(self):
+        """
+        Testing profile shown in the page
+        """
+        # get profile
+        profile = Profile.objects.all().count()
+        self.assertEqual(profile, 0)
+        # test profile data exist on the main page
+        self.assertNotContains(self.response, u'Отопков')
+        self.assertNotContains(self.response, u'Владимир')
+        self.assertNotContains(self.response, '+380937080855')
 
     def test_main_page_login_in_user(self):
         """
         Testing profile update form
         """
-        self.client.login(username='admin', password='admin')
         # get page
         response = self.client.get(reverse('task:index'))
         # if index page exists
         self.assertEqual(response.status_code, 200)
         # test form exist
-        self.assertContains(response, 'Save')
+        self.assertNotContains(response, 'Save')
 
 
 class SaveHttpRequestTests(TestCase):
@@ -63,9 +95,20 @@ class SaveHttpRequestTests(TestCase):
         """
         Testing request list view function
         """
-        # get requests
+        # get request_list
         client.login(username='admin', password='admin')
-        response = client.get(reverse('task:request_list'),
+        response = client.get(reverse('task:request_list'))
+        # test entering the page
+        self.assertEquals(response.status_code, 200)
+
+    def test_request_list_ajax(self):
+        """
+        Testing request list view function
+        """
+        # login user
+        client.login(username='admin', password='admin')
+        # get requests
+        response = client.get(reverse('task:request_list_ajax'),
                               content_type='application/json',
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         # not login user
@@ -73,21 +116,18 @@ class SaveHttpRequestTests(TestCase):
         response_2 = client_2.get(reverse('task:request_list'),
                                   content_type='application/json',
                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # test redirect if user not loggin in
         self.assertEquals(response_2.status_code, 302)
         # get first request
         request = Requests.objects.get(request='request_1')
         # get second request
         request_2 = Requests.objects.get(request='request_2')
-        # get nonexistent request
-        request_3 = Requests.objects.filter(request='request_3')
         # test getting request list
         self.assertEquals(response.status_code, 200)
         # test first request in response content
         self.assertContains(response, request)
         # test second request in response content
         self.assertContains(response, request_2)
-        # test not exist request in response content
-        self.assertNotIn(response.content, request_3)
 
     def test_request_detail(self):
         """
@@ -123,8 +163,7 @@ class SaveHttpRequestTests(TestCase):
         """
         # create client and savehttpr... instance
         self.save_http = SaveHttpRequestMiddleware()
-        self.new_request = Client()
-        self.new_request.login(username='admin', password='admin')
+        self.new_request = RequestFactory().get('/')
         # save request to DB
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
@@ -193,3 +232,62 @@ class FormTests(TestCase):
         self.assertFalse(form_min_length.is_valid())
         self.assertFalse(form_max_length.is_valid())
         self.assertFalse(form_no_data.is_valid())
+
+
+class SaveHttpRequestNoDataTests(TestCase):
+
+    def test_request_list(self):
+        """
+        Testing request list view function
+        """
+        # get request_list
+        response = client.get(reverse('task:request_list'))
+        # test entering the page
+        self.assertEquals(response.status_code, 302)
+
+    def test_request_list_ajax(self):
+        """
+        Testing request list view function
+        """
+        # get requests
+        response = client.get(reverse('task:request_list_ajax'),
+                              content_type='application/json',
+                              HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # get redirect because user is not login in
+        self.assertEquals(response.status_code, 302)
+
+    def test_request_detail(self):
+        """
+        Testing request detail view function
+        """
+        # get request
+        response = client.get(reverse('task:request_detail',
+                                      args=(2, )))
+        # test gettings page with unexisted request
+        self.assertEqual(response.status_code, 302)
+
+
+class SaveRequestAdditionalTest(TestCase):
+    fixtures = ['initial_data.json']
+
+    def test_last_requests(self):
+        """
+        Testing the requests in the right order
+        """
+        # test count of requests in db
+        self.assertEqual(Requests.objects.all().count(), 269)
+        # test if new request is the first
+        self.assertEqual(Requests.objects.first().id, 269)
+
+    def test_last_ten_requests(self):
+        """
+        Test getting last ten requests(269 in db now)
+        """
+        i = 0
+        while i < 10:
+            Requests.objects.create(request='test_request')
+            i += 1
+        # test if ten requests added to db
+        self.assertEqual(Requests.objects.all().count(), 279)
+        # test if new request is the first
+        self.assertEqual(Requests.objects.first().id, 279)

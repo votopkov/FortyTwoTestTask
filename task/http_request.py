@@ -5,5 +5,9 @@ from models import Requests
 class SaveHttpRequestMiddleware(object):
 
     def process_request(self, request):
-        save_request = Requests(request=request)
-        return save_request.save()
+        if request.is_ajax():
+            pass
+        else:
+            save_request = Requests(request=request,
+                                    path=request.build_absolute_uri())
+            return save_request.save()

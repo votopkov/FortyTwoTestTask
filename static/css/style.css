@@ -22,7 +22,6 @@ h1 {
     margin-top:20px;
 }
 
-
 .prompt {
     margin: 0 auto;
     color: black;
@@ -115,5 +114,9 @@ h1 {
 }
 
 .authenticated-div {
-    margin-top:20px;
+    margin-top: 20px;
+}
+
+.table th {
+   text-align: center;
 }
