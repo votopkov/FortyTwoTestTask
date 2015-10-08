@@ -1,8 +1,12 @@
-.content-title {
+.content-title, .content-title_right_column {
     font-size:16px;
     font-weight: bold;
-    margin-right:10px;
 }
+
+.content-title_right_column {
+    margin-right: 10px;
+}
+
 h1 {
     text-indent: 20px;
 }
@@ -20,4 +24,8 @@ h1 {
 
 .bio-field {
     margin-top:20px;
+}
+
+#test_name {
+    margin-bottom:20px;
 }
