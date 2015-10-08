@@ -7,7 +7,6 @@ class Profile(models.Model):
     last_name = models.CharField(max_length=250)
     date_of_birth = models.DateField(blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
-    contacts = models.CharField(max_length=250, default="Enter your contacts")
     email = models.EmailField(blank=True, null=True)
     jabber = models.CharField(max_length=250, blank=True, null=True)
     skype = models.CharField(max_length=250, blank=True, null=True)
