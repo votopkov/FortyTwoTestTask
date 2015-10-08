@@ -6,6 +6,7 @@ from django.test import TestCase, RequestFactory
 from models import Profile, Requests
 from http_request import SaveHttpRequestMiddleware
 from forms import ProfileForm, LoginForm
+import json
 
 client = Client()
 
@@ -107,6 +108,11 @@ class SaveHttpRequestTests(TestCase):
         """
         # login user
         client.login(username='admin', password='admin')
+        # create new 10 requests will be 12 requests in db
+        i = 0
+        while i < 10:
+            Requests.objects.create(request='test_request')
+            i += 1
         # get requests
         response = client.get(reverse('task:request_list_ajax'),
                               content_type='application/json',
@@ -128,6 +134,20 @@ class SaveHttpRequestTests(TestCase):
         self.assertContains(response, request)
         # test second request in response content
         self.assertContains(response, request_2)
+        # get json response and loads it
+        response_list = json.loads(response.content)
+        # test if 10 requests in response
+        resp_list_count = sum(1 for x in response_list)
+        self.assertEqual(resp_list_count, 10)
+
+    def test_last_requests(self):
+        """
+        Testing the requests in the right order
+        """
+        # test count of requests in db
+        self.assertEqual(Requests.objects.all().count(), 2)
+        # test if new request is the first
+        self.assertEqual(Requests.objects.first().id, 2)
 
     def test_request_detail(self):
         """
@@ -168,6 +188,39 @@ class SaveHttpRequestTests(TestCase):
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
         self.assertEqual(Requests.objects.all().count(), 3)
+
+
+class SaveHttpRequestNoDataTests(TestCase):
+
+    def test_request_list(self):
+        """
+        Testing request list view function
+        """
+        # get request_list
+        response = client.get(reverse('task:request_list'))
+        # test entering the page
+        self.assertEquals(response.status_code, 302)
+
+    def test_request_list_ajax(self):
+        """
+        Testing request list view function
+        """
+        # get requests
+        response = client.get(reverse('task:request_list_ajax'),
+                              content_type='application/json',
+                              HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        # get redirect because user is not login in
+        self.assertEquals(response.status_code, 302)
+
+    def test_request_detail(self):
+        """
+        Testing request detail view function
+        """
+        # get request
+        response = client.get(reverse('task:request_detail',
+                                      args=(2, )))
+        # test gettings page with unexisted request
+        self.assertEqual(response.status_code, 302)
 
 
 class FormTests(TestCase):
@@ -232,62 +285,3 @@ class FormTests(TestCase):
         self.assertFalse(form_min_length.is_valid())
         self.assertFalse(form_max_length.is_valid())
         self.assertFalse(form_no_data.is_valid())
-
-
-class SaveHttpRequestNoDataTests(TestCase):
-
-    def test_request_list(self):
-        """
-        Testing request list view function
-        """
-        # get request_list
-        response = client.get(reverse('task:request_list'))
-        # test entering the page
-        self.assertEquals(response.status_code, 302)
-
-    def test_request_list_ajax(self):
-        """
-        Testing request list view function
-        """
-        # get requests
-        response = client.get(reverse('task:request_list_ajax'),
-                              content_type='application/json',
-                              HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        # get redirect because user is not login in
-        self.assertEquals(response.status_code, 302)
-
-    def test_request_detail(self):
-        """
-        Testing request detail view function
-        """
-        # get request
-        response = client.get(reverse('task:request_detail',
-                                      args=(2, )))
-        # test gettings page with unexisted request
-        self.assertEqual(response.status_code, 302)
-
-
-class SaveRequestAdditionalTest(TestCase):
-    fixtures = ['initial_data.json']
-
-    def test_last_requests(self):
-        """
-        Testing the requests in the right order
-        """
-        # test count of requests in db
-        self.assertEqual(Requests.objects.all().count(), 269)
-        # test if new request is the first
-        self.assertEqual(Requests.objects.first().id, 269)
-
-    def test_last_ten_requests(self):
-        """
-        Test getting last ten requests(269 in db now)
-        """
-        i = 0
-        while i < 10:
-            Requests.objects.create(request='test_request')
-            i += 1
-        # test if ten requests added to db
-        self.assertEqual(Requests.objects.all().count(), 279)
-        # test if new request is the first
-        self.assertEqual(Requests.objects.first().id, 279)
