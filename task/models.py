@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
+from django.utils import timezone
 
 
 class Profile(models.Model):
@@ -26,7 +27,8 @@ class Requests(models.Model):
     title = models.CharField(max_length=250, default='Http_request')
     request = models.TextField()
     path = models.CharField(max_length=250, blank=True, null=True)
-    pub_date = models.DateTimeField(blank=True, null=True)
+    pub_date = models.DateTimeField(default=timezone.now,
+                                    blank=True, null=True)
 
     class Meta:
         ordering = ['-pub_date']
