@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -* -
 from models import Requests
-from django.utils import timezone
+from django.utils import timezone as t
+
 
 class SaveHttpRequestMiddleware(object):
 
@@ -8,7 +9,7 @@ class SaveHttpRequestMiddleware(object):
         if request.is_ajax():
             pass
         else:
-            save_request = Requests(request=request, pub_date=
-            timezone.now() + timezone.timedelta(hours=3),
+            save_request = Requests(request=request,
+                                    pub_date=t.now() + t.timedelta(hours=3),
                                     path=request.build_absolute_uri())
             return save_request.save()
