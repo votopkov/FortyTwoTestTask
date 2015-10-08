@@ -81,7 +81,7 @@ class ProfileNoDataMethodTests(TestCase):
         response = self.client.get(reverse('task:index'))
         # if index page exists
         self.assertEqual(response.status_code, 200)
-        # test form exist
+        # test form not exist
         self.assertNotContains(response, 'Save')
 
 
@@ -117,13 +117,6 @@ class SaveHttpRequestTests(TestCase):
         response = client.get(reverse('task:request_list_ajax'),
                               content_type='application/json',
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        # not login user
-        client_2 = Client()
-        response_2 = client_2.get(reverse('task:request_list'),
-                                  content_type='application/json',
-                                  HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        # test redirect if user not loggin in
-        self.assertEquals(response_2.status_code, 302)
         # get first request
         request = Requests.objects.get(request='request_1')
         # get second request
@@ -221,6 +214,14 @@ class SaveHttpRequestNoDataTests(TestCase):
                                       args=(2, )))
         # test gettings page with unexisted request
         self.assertEqual(response.status_code, 302)
+        # create user to test
+        User.objects.create_user('admin', ' ', 'admin')
+        # login user
+        client.login(username='admin', password='admin')
+        # test gettings page with unexisted request
+        response_2 = client.get(reverse('task:request_detail',
+                                      args=(2, )))
+        self.assertEqual(response_2.status_code, 200)
 
 
 class FormTests(TestCase):
