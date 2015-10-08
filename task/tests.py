@@ -4,6 +4,7 @@ from django.test import Client
 from django.test import TestCase, RequestFactory
 from models import Profile, Requests
 from http_request import SaveHttpRequestMiddleware
+import json
 
 client = Client()
 
@@ -92,6 +93,11 @@ class SaveHttpRequestTests(TestCase):
         """
         Testing request list view function
         """
+        # create new 10 requests will be 12 requests in db
+        i = 0
+        while i < 10:
+            Requests.objects.create(request='test_request')
+            i += 1
         # get requests
         response = client.get(reverse('task:request_list_ajax'),
                               content_type='application/json',
@@ -106,6 +112,20 @@ class SaveHttpRequestTests(TestCase):
         self.assertContains(response, request)
         # test second request in response content
         self.assertContains(response, request_2)
+        # get json response and loads it
+        response_list = json.loads(response.content)
+        # test if 10 requests in response
+        resp_list_count = sum(1 for x in response_list)
+        self.assertEqual(resp_list_count, 10)
+
+    def test_last_requests(self):
+        """
+        Testing the requests in the right order
+        """
+        # test count of requests in db
+        self.assertEqual(Requests.objects.all().count(), 2)
+        # test if new request is the first
+        self.assertEqual(Requests.objects.first().id, 2)
 
     def test_request_detail(self):
         """
@@ -171,29 +191,3 @@ class SaveHttpRequestNoDataTests(TestCase):
                                       args=(2, )))
         # test gettings page with unexisted request
         self.assertEqual(response.status_code, 404)
-
-
-class SaveRequestAdditionalTest(TestCase):
-    fixtures = ['initial_data.json']
-
-    def test_last_requests(self):
-        """
-        Testing the requests in the right order
-        """
-        # test count of requests in db
-        self.assertEqual(Requests.objects.all().count(), 215)
-        # test if new request is the first
-        self.assertEqual(Requests.objects.first().id, 215)
-
-    def test_last_ten_requests(self):
-        """
-        Test getting last ten requests(215 in db now)
-        """
-        i = 0
-        while i < 10:
-            Requests.objects.create(request='test_request')
-            i += 1
-        # test if ten requests added to db
-        self.assertEqual(Requests.objects.all().count(), 225)
-        # test if new request is the first
-        self.assertEqual(Requests.objects.first().id, 225)
