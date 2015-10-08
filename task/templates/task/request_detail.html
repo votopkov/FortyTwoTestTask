@@ -10,12 +10,12 @@
     <title>{{ obj.title }} - {{ obj.id }}</title>
 {% endblock %}
 {% block content %}
-    <h1>42 Coffee Cups Test Assignment</h1>
     <div class=container>
-    <div class="row">
-        <div class="col-xs-12">
-            {{ obj.request }}
+        <div class="row">
+            <div id="test_name" class="col-xs-8 col-xs-offset-2 text-center"><h1>42 Coffee Cups Test Assignment</h1></div>
+            <div class="col-xs-12">
+                {{ obj.request }}
+            </div>
         </div>
-    </div>
     </div>
 {% endblock %}
