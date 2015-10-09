@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load assets %}
+{% block head %}
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    {% assets "all_css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}" />
+    {% endassets %}
+    <title>{{ obj.title }} - {{ obj.id }}</title>
+{% endblock %}
+{% block content %}
+    <div class=container>
+        <div class="row">
+            <div id="test_name" class="col-xs-8 col-xs-offset-2 text-center"><h1>42 Coffee Cups Test Assignment</h1></div>
+            <div class="col-xs-12">
+                {{ obj.request }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

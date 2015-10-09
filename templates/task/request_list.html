@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load assets %}
+{% block head %}
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    {% assets "all_css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}" />
+    {% endassets %}
+    {% assets "js_all" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <script type="text/javascript" src="{% static 'js/get_requests.js' %}"></script>
+    <title>Request list</title>
+{% endblock %}
+{% block content %}
+    <div class=container>
+        <div class="row">
+            <div id="test_name" class="col-xs-8 col-xs-offset-2 text-center"><h1>42 Coffee Cups Test Assignment</h1></div>
+            <div class="col-xs-12">
+                <div class="col-xs-12 result">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,12 +1,5 @@
 $(document).ready(function() {
 
-    $(".datepicker").datepicker({
-        dateFormat: "yy-mm-dd",
-        showButtonPanel: true,
-        changeYear: true,
-        yearRange: "1950:2010"
-    });
-
     // get 10 requests
     $('body').attr('new_request', 0);
     load_requests = function () {

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load assets %}
+{% block head %}
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    {% assets "all_css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}" />
+    {% endassets %}
+    {% assets "js_all" %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    <title>Main</title>
+{% endblock %}
+{% block content %}
+    <div class="indicator"><img src="{% static 'images/indicator.gif' %}"> </div>
+    <div class="container">
+        <div id="test_name" class="col-xs-8 col-xs-offset-2 text-center"><h1>42 Coffee Cups Test Assignment</h1></div>
+        <div class="row">
+            <div class="col-xs-12 main-div">
+                <div class="login-div col-xs-6 col-xs-offset-3 main-login-div">
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <div class="prompt">
+                                <div>username - admin</div>
+                                <div>password - admin</div>
+                            </div>
+                            <div class="login-form-title">Login</div>
+                            <form id="login_form" action="/login/" method="post">
+                                {% csrf_token %}
+                                {{ form }}
+                                <input class="btn" type="submit" value="submit">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

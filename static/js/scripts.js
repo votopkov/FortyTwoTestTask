@@ -16,7 +16,7 @@ function logout() {
         success: function(msg) {
             $('.indicator').css('display', 'none');
             $('.main-div').html('You have already logout <a href="/"> Go to main</a>');
-            $('#logout').replaceWith("<a  href='{% url 'task:login' %}'>Login</a>");
+            $('#logout').replaceWith("<a  href='/login/'>Login</a>");
             $('.result, .hr, #requests').replaceWith(" ");
 
         }
