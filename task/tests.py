@@ -11,7 +11,7 @@ client = Client()
 
 
 class ProfileMethodTests(TestCase):
-    fixtures = ['fixtures/initial_data.json']
+    fixtures = ['initial_data.json']
 
     def setUp(self):
         Profile.objects.create(name=u"Василий", last_name=u"Петров")
