@@ -1,9 +1,6 @@
-.content-title, .content-title_right_column {
+.content-title {
     font-size:16px;
     font-weight: bold;
-}
-
-.content-title_right_column {
     margin-right: 10px;
 }
 
