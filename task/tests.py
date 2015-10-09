@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase, RequestFactory
 from models import Profile, Requests
-from http_request import SaveHttpRequestMiddleware
+from http_request_middleware import SaveHttpRequestMiddleware
 import json
 
 client = Client()
@@ -150,7 +150,7 @@ class SaveHttpRequestTests(TestCase):
         """
         # create client and savehttpr... instance
         self.save_http = SaveHttpRequestMiddleware()
-        self.new_request = RequestFactory().get('/')
+        self.new_request = RequestFactory().get(reverse('task:index'))
         # save request to DB
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
