@@ -7,6 +7,7 @@ from models import Profile
 from models import Requests
 from forms import LoginForm, ProfileForm
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.http import require_POST
 import json
 
 
@@ -37,6 +38,7 @@ def request_detail(request, identify):
 
 
 @login_required(login_url='/login/')
+@require_POST
 def update_profile(request):
     identify = request.POST.get('id')
     profile = Profile.objects.get(id=identify)
@@ -73,10 +75,7 @@ def login_view(request):
             request.session['user_id'] = profile.id
         else:
             profile = False
-        if profile:
-            profile_to_json = {'is_ok': True}
-        else:
-            profile_to_json = {'profile': profile}
+        profile_to_json = {'is_ok': True} if profile else {'is_ok': False}
         return HttpResponse(json.dumps(profile_to_json),
                             content_type="application/json")
 

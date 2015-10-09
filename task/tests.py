@@ -7,6 +7,8 @@ from models import Profile, Requests
 from http_request import SaveHttpRequestMiddleware
 from forms import ProfileForm, LoginForm
 import json
+from django.utils.encoding import smart_unicode
+
 
 client = Client()
 
@@ -15,7 +17,8 @@ class ProfileMethodTests(TestCase):
     fixtures = ['initial_data.json']
 
     def setUp(self):
-        Profile.objects.create(name=u"Василий", last_name=u"Петров")
+        user = User.objects.create(username='guest', password='guest')
+        Profile.objects.create(name=u"Василий", last_name=u"Петров", user=user)
         # get main page
         self.response = self.client.get(reverse('task:index'))
 
@@ -46,6 +49,131 @@ class ProfileMethodTests(TestCase):
                             Profile.objects.get(id=2))
         self.assertNotIn('Василий', self.response.content)
 
+    def test_unicode(self):
+        """
+        Test unicode data on the page
+        """
+        profile = Profile.objects.first()
+        self.assertEqual(smart_unicode(profile), u'Отопков')
+
+    def test_db_entries_count(self):
+        """
+        Test db entries
+        """
+        profile = Profile.objects.all().count()
+        # one profile in fixtures and one in setUp
+        self.assertEqual(profile, 2)
+
+    def test_admin(self):
+        """
+        Test admin
+        """
+        response = self.client.get(reverse('admin:index'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_admin_login(self):
+        """
+        Test enter admin part
+        """
+        admin = {'name': 'admin',
+                 'password': 'admin'}
+        response = self.client.post(reverse('admin:index'), admin)
+        self.assertEqual(response.status_code, 200)
+
+    def test_index_html(self):
+        """
+        Test valid html
+        """
+        response = self.client.get(reverse('task:index'))
+        self.assertTrue('<h1>42 Coffee Cups Test Assignment</h1>'
+                        in response.content)
+
+    def test_send_post_data_login(self):
+        """
+        Test login user
+        """
+        user = {'username': 'admin',
+                'password': 'admin'}
+        response = self.client.post(reverse('task:login'), user)
+        self.assertEqual(response.status_code, 200)
+        response_list = json.loads(response.content)
+        self.assertTrue(response_list['is_ok'])
+
+    def test_send_false_post_data_login(self):
+        """
+        Test not login with not valid data
+        """
+        user = {'username': 'admin',
+                'password': '1234'}
+        response = self.client.post(reverse('task:login'), user)
+        self.assertEqual(response.status_code, 200)
+        response_list = json.loads(response.content)
+        self.assertFalse(response_list['is_ok'])
+
+    def test_send_post_data_update_profile(self):
+        """
+        Testing update profile
+        """
+        form_data = {
+            'id': 2,
+            'name': 'admin',
+            'last_name': 'admin',
+            'date_of_birth': '1993-11-29',
+            'email': 'mail@mail.ua',
+            'jabber': 'jabber@jabber.ua',
+            'skype': 'skype',
+        }
+        # test login required
+        test_login_req_response = self.client.post(
+            reverse('task:update_profile'), form_data
+        )
+        self.assertEqual(test_login_req_response.status_code, 302)
+        self.client.login(username='admin', password='admin')
+        # update Vasiliy Petrov
+        self.client.post(reverse('task:update_profile'), form_data)
+        # get Vasiliy Petrov profile
+        profile = Profile.objects.get(id=2)
+        # test if it is updated
+        self.assertEqual(profile.name, 'admin')
+        self.assertEqual(profile.email, 'mail@mail.ua')
+
+    def test_send_unvalid_post_data_update_profile(self):
+        """
+        Testing not update profile unvalid data
+        """
+        form_data = {
+            'id': 2,
+            'name': 'ad',  # min 3 simbols
+            'last_name': 'admin',
+            'date_of_birth': '1993-11-29',
+            'email': 'mail@mail.ua',
+            'jabber': 'jabber@jabber.ua',
+            'skype': 'skype',
+        }
+        # test login required
+        test_login_req_response = self.client.post(
+            reverse('task:update_profile'), form_data
+        )
+        self.assertEqual(test_login_req_response.status_code, 302)
+        self.client.login(username='admin', password='admin')
+        # update Vasiliy Petrov
+        self.client.post(reverse('task:update_profile'), form_data)
+        # get Vasiliy Petrov profile
+        profile = Profile.objects.get(id=2)
+        # test if name was updated
+        self.assertEqual(profile.name, smart_unicode(u'Василий'))
+        # test if Vasiliy has new email
+        self.assertNotEqual(profile.email, 'mail@mail.ua')
+
+    def test_logout(self):
+        response = self.client.get(reverse('task:logout'))
+        # test login required
+        self.assertEqual(response.status_code, 302)
+        # login
+        self.client.login(username='admin', password='admin')
+        response_2 = self.client.get(reverse('task:logout'))
+        self.assertEqual(response_2.status_code, 200)
+
 
 class ProfileNoDataMethodTests(TestCase):
 
@@ -72,7 +200,7 @@ class ProfileNoDataMethodTests(TestCase):
         self.assertNotContains(self.response, u'Владимир')
         self.assertNotContains(self.response, '+380937080855')
 
-    def test_main_page_login_in_user(self):
+    def test_main_page_not_login_in_user(self):
         """
         Testing profile update form
         """
