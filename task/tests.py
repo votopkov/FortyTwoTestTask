@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase, RequestFactory
 from models import Profile, Requests
-from http_request import SaveHttpRequestMiddleware
+from middleware import SaveHttpRequestMiddleware
 from forms import ProfileForm, LoginForm
 import json
 from django.utils.encoding import smart_unicode
