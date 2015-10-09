@@ -8,9 +8,6 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Deleting field 'Profile.contacts'
-        db.delete_column(u'task_profile', 'contacts')
-
         # Adding field 'Profile.url_height'
         db.add_column(u'task_profile', 'url_height',
                       self.gf('django.db.models.fields.PositiveIntegerField')(default=200),
@@ -33,11 +30,6 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Adding field 'Profile.contacts'
-        db.add_column(u'task_profile', 'contacts',
-                      self.gf('django.db.models.fields.CharField')(default='Enter your contacts', max_length=250),
-                      keep_default=False)
-
         # Deleting field 'Profile.url_height'
         db.delete_column(u'task_profile', 'url_height')
 
@@ -107,6 +99,7 @@ class Migration(SchemaMigration):
         u'task.requests': {
             'Meta': {'ordering': "['-pub_date']", 'object_name': 'Requests'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'path': ('django.db.models.fields.CharField', [], {'max_length': '250', 'null': 'True', 'blank': 'True'}),
             'pub_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'request': ('django.db.models.fields.TextField', [], {}),
             'title': ('django.db.models.fields.CharField', [], {'default': "'Http_request'", 'max_length': '250'})
