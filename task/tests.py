@@ -5,14 +5,15 @@ from django.test import TestCase, RequestFactory
 from models import Profile, Requests
 from http_request_middleware import SaveHttpRequestMiddleware
 import json
+from django.utils.encoding import smart_unicode
 
 client = Client()
 
 
 class ProfileMethodTests(TestCase):
+    fixtures = ['fixtures/initial_data.json']
 
     def setUp(self):
-        Profile.objects.create(name=u"Владимир", last_name=u"Отопков")
         Profile.objects.create(name=u"Василий", last_name=u"Петров")
         # get main page
         self.response = self.client.get(reverse('task:index'))
@@ -44,6 +45,21 @@ class ProfileMethodTests(TestCase):
                             Profile.objects.get(id=2))
         self.assertNotIn('Василий', self.response.content)
 
+    def test_unicode(self):
+        """
+        Test unicode data on the page
+        """
+        profile = Profile.objects.first()
+        self.assertEqual(smart_unicode(profile), u'Отопков')
+
+    def test_db_entries_count(self):
+        """
+        Test db entries
+        """
+        profile = Profile.objects.all().count()
+        # one profile in fixtures and one in setUp
+        self.assertEqual(profile, 2)
+
 
 class ProfileNoDataMethodTests(TestCase):
 
@@ -68,6 +84,13 @@ class ProfileNoDataMethodTests(TestCase):
         # test profile data exist on the main page
         self.assertNotContains(self.response, u'Отопков')
         self.assertNotContains(self.response, u'Владимир')
+
+    def test_db_entries_count(self):
+        """
+        Test db entries
+        """
+        profile = Profile.objects.all().count()
+        self.assertEqual(profile, 0)
 
 
 class SaveHttpRequestTests(TestCase):
