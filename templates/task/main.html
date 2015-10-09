@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 main-div">
+            <div class="col-xs-11 main-div">
                 <div class="row">
                     <div class='logged_in_greeting col-xs-12'>
                         <div class='row'>
@@ -103,7 +103,7 @@
                                             <div class="field">Skype: {{ profile.skype }}</div>
                                             <span>Other_contacts:</span>
                                             <div class="field">{{ profile.other_contacts|linebreaks }}</div>
-                                            <span>Bio:</span>
+                                            <span id="bio_title">Bio:</span>
                                             <div>{{ profile.bio|linebreaks }}</div>
                                         </div>
                                         {% if user.is_authenticated %}

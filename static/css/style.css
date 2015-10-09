@@ -123,3 +123,8 @@ h1 {
 .table th {
    text-align: center;
 }
+
+#bio_title {
+    display: block;
+    margin-top:30px;
+}
