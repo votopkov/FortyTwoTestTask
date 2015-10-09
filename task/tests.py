@@ -59,6 +59,21 @@ class ProfileMethodTests(TestCase):
         # one profile in fixtures and one in setUp
         self.assertEqual(profile, 2)
 
+    def test_admin(self):
+        response = self.client.get(reverse('admin:index'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_admin_login(self):
+        admin = {'name': 'admin',
+                 'password': 'admin'}
+        response = self.client.post(reverse('admin:index'), admin)
+        self.assertEqual(response.status_code, 200)
+
+    def test_index_html(self):
+        response = self.client.get(reverse('task:index'))
+        self.assertTrue('<h1>42 Coffee Cups Test Assignment</h1>'
+                        in response.content)
+
 
 class ProfileNoDataMethodTests(TestCase):
 
