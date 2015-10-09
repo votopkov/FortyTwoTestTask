@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase, RequestFactory
 from models import Profile, Requests
-from http_request_middleware import SaveHttpRequestMiddleware
+from middleware import SaveHttpRequestMiddleware
 import json
 from django.utils.encoding import smart_unicode
 
@@ -59,6 +59,21 @@ class ProfileMethodTests(TestCase):
         profile = Profile.objects.all().count()
         # one profile in fixtures and one in setUp
         self.assertEqual(profile, 2)
+
+    def test_admin(self):
+        response = self.client.get(reverse('admin:index'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_admin_login(self):
+        admin = {'name': 'admin',
+                 'password': 'admin'}
+        response = self.client.post(reverse('admin:index'), admin)
+        self.assertEqual(response.status_code, 200)
+
+    def test_index_html(self):
+        response = self.client.get(reverse('task:index'))
+        self.assertTrue('<h1>42 Coffee Cups Test Assignment</h1>'
+                        in response.content)
 
 
 class ProfileNoDataMethodTests(TestCase):
