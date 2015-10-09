@@ -12,10 +12,9 @@ client = Client()
 
 
 class ProfileMethodTests(TestCase):
+    fixtures = ['initial_data.json']
 
     def setUp(self):
-        User.objects.create_user('admin', ' ', 'admin')
-        Profile.objects.create(name=u"Владимир", last_name=u"Отопков")
         Profile.objects.create(name=u"Василий", last_name=u"Петров")
         # get main page
         self.response = self.client.get(reverse('task:index'))
@@ -192,7 +191,7 @@ class SaveHttpRequestNoDataTests(TestCase):
         # get request_list
         response = client.get(reverse('task:request_list'))
         # test entering the page
-        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.status_code, 200)
 
     def test_request_list_ajax(self):
         """
@@ -202,8 +201,7 @@ class SaveHttpRequestNoDataTests(TestCase):
         response = client.get(reverse('task:request_list_ajax'),
                               content_type='application/json',
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        # get redirect because user is not login in
-        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.status_code, 200)
 
     def test_request_detail(self):
         """
@@ -220,7 +218,7 @@ class SaveHttpRequestNoDataTests(TestCase):
         client.login(username='admin', password='admin')
         # test gettings page with unexisted request
         response_2 = client.get(reverse('task:request_detail',
-                                      args=(2, )))
+                                        args=(2, )))
         self.assertEqual(response_2.status_code, 200)
 
 

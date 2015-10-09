@@ -17,12 +17,10 @@ def main(request):
     return render(request, 'task/main.html', context)
 
 
-@login_required(login_url='/login/')
 def request_list(request):
     return render(request, 'task/request_list.html')
 
 
-@login_required(login_url='/login/')
 def request_list_ajax(request):
     if request.is_ajax():
         data = serializers.serialize("json", Requests.objects.all()[:10])
