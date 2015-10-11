@@ -110,6 +110,20 @@ class ProfileMethodTests(TestCase):
         response_list = json.loads(response.content)
         self.assertFalse(response_list['is_ok'])
 
+    def test_entering_edit_profiel(self):
+        # test login required
+        test_login_req_response = client.post(
+            reverse('task:edit_profile')
+        )
+        self.assertEqual(test_login_req_response.status_code, 302)
+        # login
+        self.client.login(username='admin', password='admin')
+        # get edit page with login user
+        response = self.client.get(reverse('task:edit_profile'))
+        self.assertEqual(response.status_code, 200)
+        # test if form is on the page (Save - submit button)
+        self.assertContains(response, 'Save')
+
     def test_send_post_data_update_profile(self):
         """
         Testing update profile
@@ -128,7 +142,13 @@ class ProfileMethodTests(TestCase):
             reverse('task:update_profile'), form_data
         )
         self.assertEqual(test_login_req_response.status_code, 302)
+        # login
         self.client.login(username='admin', password='admin')
+        # test method (get not allowed)
+        test_method_response = self.client.get(
+            reverse('task:update_profile')
+        )
+        self.assertEqual(test_method_response.status_code, 405)
         # update Vasiliy Petrov
         self.client.post(reverse('task:update_profile'), form_data)
         # get Vasiliy Petrov profile

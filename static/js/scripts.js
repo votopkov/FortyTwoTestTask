@@ -15,7 +15,9 @@ function logout() {
         },
         success: function(msg) {
             $('.indicator').css('display', 'none');
-            $('.main-div').html('You have already logout <a href="/"> Go to main</a>');
+            $('.header_link').remove();
+            $('.main-div').html('You have already logout !<a href="/"> Go to main</a> or ' +
+                '<a href="/login/">Login</a>');
             $('#logout').replaceWith("<a  href='/login/'>Login</a>");
             $('.result, .hr, #requests').replaceWith(" ");
 
@@ -57,13 +59,9 @@ $(document).ready(function() {
             success: function(msg) {
                 $('.indicator').css('display', 'none');
                 if (msg.is_ok){
-                    $('.login-tip').remove();
-                    $('.login-form-title').before("<div class='text-success login-tip'>" +
-                        "Your are log in!" +
-                        "<div><a href='/'>refresh page</a></div></div>").remove();
-                    $('#login_form, .prompt').remove();
-
-                }else {
+                    window.location.href = '/'
+                }
+                else {
                     $('.login-tip').remove();
                     $('.login-error').remove();
                     $('.login-form-title').prepend("<div class='text-danger login-tip'>" +

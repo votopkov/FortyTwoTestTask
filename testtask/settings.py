@@ -34,13 +34,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'task',
+    'apps.task',
     'south',
     'django_assets',
 )
 
 MIDDLEWARE_CLASSES = (
-    'task.middleware.SaveHttpRequestMiddleware',
+    'apps.task.middleware.SaveHttpRequestMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

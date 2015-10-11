@@ -2,8 +2,8 @@ MANAGE=django-admin.py
 
 
 test:
-	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=testtask.settings $(MANAGE) test task
-	flake8 --exclude '*migrations*' task
+	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=testtask.settings $(MANAGE) test apps.task
+	flake8 --exclude '*migrations*' apps
 
 run:
 	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=testtask.settings $(MANAGE) runserver
