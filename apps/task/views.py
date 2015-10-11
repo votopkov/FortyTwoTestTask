@@ -18,6 +18,14 @@ def main(request):
     return render(request, 'task/main.html', context)
 
 
+@login_required(login_url='/login/')
+def edit_profile(request):
+    profile = Profile.objects.first()
+    user_form = ProfileForm(instance=profile)
+    context = dict(profile=profile, user_form=user_form)
+    return render(request, 'task/edit_profile.html', context)
+
+
 def request_list(request):
     return render(request, 'task/request_list.html')
 
