@@ -9,6 +9,8 @@ from forms import LoginForm, ProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_POST
 import json
+from PIL import Image, ImageOps
+from random import randint
 
 
 def main(request):
@@ -54,6 +56,12 @@ def update_profile(request):
     if form.is_valid():
         form.save()
         profile = Profile.objects.get(id=int(identify))
+        if profile.photo:
+            image = Image.open(profile.photo)
+            imagefit = ImageOps.fit(image, (200, 200), Image.ANTIALIAS)
+            photo_path = profile.photo.url.replace("/", "", 1)
+            imagefit.save(photo_path, 'JPEG', quality=75)
+
         profile_to_json = {'msg': "<div class='col-xs-12"
                                   " bg-success prof_updated'>"
                                   "Profile has been updated</div>",

@@ -12,9 +12,8 @@ class Profile(models.Model):
                                  default="Eneter your last name")
     date_of_birth = models.DateField(blank=True, null=True)
     photo = models.ImageField(upload_to='images/',
-                              height_field='url_height',
-                              width_field='url_width',
-                              blank=True, null=True)
+                              blank=True,
+                              null=True)
     bio = models.TextField(blank=True, null=True, default=" ")
 
     email = models.EmailField(blank=True, null=True)
