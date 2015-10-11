@@ -35,9 +35,9 @@
                         <div class='logged_in_greeting_title col-xs-10'>
                             <div class="user-data">
                                 <div class="col-xs-6 left-column">
-                                    <div class="field">Name: {{ profile.name }}</div>
-                                    <div class="field">Last Name: {{ profile.last_name }}</div>
-                                    <div class="field">Date of Birth: {{ profile.date_of_birth }}</div>
+                                    <div class="field">{{ profile.name }}</div>
+                                    <div class="field">{{ profile.last_name }}</div>
+                                    <div class="field">{{ profile.date_of_birth }}</div>
                                     <div class="div_image_preview">
                                         {% if profile.photo  %}
                                             <img id="image_preview" width="200"  src="{{ profile.photo.url }}">
