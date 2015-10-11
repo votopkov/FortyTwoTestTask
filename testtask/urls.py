@@ -8,5 +8,5 @@ admin.autodiscover()
 urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^images/(?P<path>.*)$', 'django.views.static.serve'),
-                       url(r'^', include('task.urls', namespace="task")),
+                       url(r'^', include('apps.task.urls', namespace="task")),
                        ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
