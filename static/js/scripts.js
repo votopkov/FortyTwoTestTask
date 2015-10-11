@@ -133,7 +133,14 @@ $(document).ready(function() {
                 success: function (msg) {
                     $('.indicator').css('display', 'none');
                     $('input[value=Save]').before(msg.msg);
-                    $('div.div_image_preview > img').attr("src", msg.image_src);
+                    if ($('div.div_image_preview').attr('img') == 'no-img') {
+                        $('div.div_image_preview').append('<img width="200"' +
+                            'src="' + msg.image_src + '"></img>');
+                        $('div.div_image_preview').attr('img', ' ')
+                    } else {
+                        $('div.div_image_preview > img').attr("src", msg.image_src);
+                    }
+
 
                 }
 

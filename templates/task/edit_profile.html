@@ -47,7 +47,7 @@
                                             <div class="form-group">
                                                 {{ user_form.photo }}
                                             </div>
-                                            <div class="div_image_preview">
+                                            <div class="div_image_preview" {% if profile.photo  %} {% else %} img="no-img" {% endif %}>
                                                 {% if profile.photo  %}
                                                     <img id="image_preview" width="200"  src="{{ profile.photo.url }}">
                                                 {% endif %}
