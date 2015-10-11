@@ -10,7 +10,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_POST
 import json
 from PIL import Image, ImageOps
-from random import randint
 
 
 def main(request):

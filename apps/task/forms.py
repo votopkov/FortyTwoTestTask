@@ -1,6 +1,5 @@
 from django import forms
 from models import Profile
-from PIL import Image, ImageOps
 
 
 class LoginForm(forms.Form):
