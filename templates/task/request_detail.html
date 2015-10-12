@@ -1,12 +1,10 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% load assets %}
 {% block head %}
     <meta name="keywords" content="">
     <meta name="description" content="">
-    {% assets "all_css" %}
-        <link rel="stylesheet" href="{{ ASSET_URL }}" />
-    {% endassets %}
+    <link rel="stylesheet" href="{% static 'bootstrap-3.3.5-dist/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
     <title>{{ obj.title }} - {{ obj.id }}</title>
 {% endblock %}
 {% block content %}
