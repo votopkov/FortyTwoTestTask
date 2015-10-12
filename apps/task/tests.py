@@ -11,7 +11,6 @@ from django.utils.encoding import smart_unicode
 from django.utils.six import StringIO
 from django.template import Template, Context
 from apps.task.templatetags.task_tags import get_edit_admin_page
-from models import SavedSignals
 from django.core.management import call_command
 
 
@@ -184,7 +183,7 @@ class ProfileMethodTests(TestCase):
         # update Vasiliy Petrov
         self.client.post(reverse('task:update_profile'), form_data)
         # get Vasiliy Petrov profile
-        profile = Profile.objects.get(id=2)
+        profile = Profile.objects.get(pk=2)
         # test if name was updated
         self.assertEqual(profile.name, smart_unicode(u'Василий'))
         # test if Vasiliy has new email
@@ -460,31 +459,3 @@ class CommandSignalTagTests(TestCase):
         rendered = self.template.render(Context({'profile': self.profile}))
         self.assertIn(get_edit_admin_page(self.profile.id),
                       rendered)
-
-    def test_signals(self):
-        """
-        Testing custom tag get_edit_admin_page
-        """
-        user = User.objects.create(username='guest',
-                                   password='guest')
-        Profile.objects.create(name=u"Василий",
-                               last_name=u"Петров",
-                               user=user)
-        # get record about Profile
-        save_profile = SavedSignals.objects.last()
-        # test status
-        self.assertEqual(save_profile.status, 'Created')
-        # get profile and update last name
-        profile = Profile.objects.first()
-        profile.last_name = "update"
-        profile.save()
-        # get record about profile
-        update_profile = SavedSignals.objects.last()
-        # test status
-        self.assertEqual(update_profile.status, 'Updated')
-        # delete profile
-        profile.delete()
-        # get record about profile
-        delete_profile = SavedSignals.objects.last()
-        # test status
-        self.assertEqual(delete_profile.status, 'Deleted')
