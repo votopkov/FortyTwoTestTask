@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import pre_save, pre_delete, post_save
-from functions import disable_for_loaddata
+from django.db.models.signals import post_save
 from PIL import Image, ImageOps
 from django.dispatch.dispatcher import receiver
 
@@ -61,38 +60,3 @@ class SavedSignals(models.Model):
 
     def __unicode__(self):
         return self.title + " - " + str(self.id)
-
-
-@receiver(pre_save, sender=Profile)
-@disable_for_loaddata
-def save_profile(instance, **kwargs):
-    if instance.id is None:
-        save_signals = SavedSignals(
-            title=instance.__class__.__name__,
-            status='Created')
-        save_signals.save()
-    else:
-        profile_obj = Profile.objects.get(id=instance.id)
-        for field in profile_obj._meta.get_all_field_names():
-            profile_field = getattr(profile_obj, field)
-            instance_field = getattr(instance, field)
-            if profile_field != instance_field:
-                save_signals = SavedSignals(
-                    title=instance.__class__.__name__,
-                    status='Updated')
-                save_signals.save()
-                break
-
-        else:
-            save_signals = SavedSignals(
-                title=instance.__class__.__name__,
-                status='Saved')
-            save_signals.save()
-
-
-@receiver(pre_delete, sender=Profile)
-def delete_profile(instance, **kwargs):
-    save_signals = SavedSignals(
-        title=instance.__class__.__name__,
-        status='Deleted')
-    save_signals.save()
