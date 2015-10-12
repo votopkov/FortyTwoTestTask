@@ -34,6 +34,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admin.widgets',
     'apps.task',
     'south',
     'django_assets',
@@ -88,6 +89,9 @@ PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
+
+ADMIN_MEDIA_PREFIX = '/media/admin/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = (
     STATIC_DIR,

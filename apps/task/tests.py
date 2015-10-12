@@ -179,7 +179,7 @@ class ProfileMethodTests(TestCase):
         # update Vasiliy Petrov
         self.client.post(reverse('task:update_profile'), form_data)
         # get Vasiliy Petrov profile
-        profile = Profile.objects.get(id=2)
+        profile = Profile.objects.get(pk=2)
         # test if name was updated
         self.assertEqual(profile.name, smart_unicode(u'Василий'))
         # test if Vasiliy has new email

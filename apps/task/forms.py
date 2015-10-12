@@ -1,5 +1,6 @@
 from django import forms
 from models import Profile
+from widgets import DatePickerWidget
 
 
 class LoginForm(forms.Form):
@@ -25,11 +26,10 @@ class ProfileForm(forms.ModelForm):
                                 min_length=3,
                                 widget=forms.TextInput(
                                     attrs={'class': 'form-control'}))
-    date_of_birth = forms.CharField(max_length=100,
-                                    min_length=3,
-                                    widget=forms.TextInput(
-                                        attrs={'class':
-                                               'form-control datepicker'}))
+    date_of_birth = forms.DateField(widget=DatePickerWidget(
+        params="dateFormat: 'yy-mm-dd', changeYear: true,"
+               " defaultDate: 'c-25', yearRange: 'c-115:c'",
+        attrs={'class': 'datepicker'}))
     photo = forms.ImageField(required=False,
                              widget=forms.FileInput)
     email = forms.EmailField(max_length=100,

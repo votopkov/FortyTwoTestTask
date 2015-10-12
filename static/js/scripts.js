@@ -27,13 +27,13 @@ function logout() {
 
 $(document).ready(function() {
 
-    $(".datepicker").datepicker({
+  /*  $(".datepicker").datepicker({
         dateFormat: "yy-mm-dd",
         showButtonPanel: true,
         changeYear: true,
         yearRange: "1950:2010"
     });
-
+*/
 // login
     $('#login_form').submit(function(e) {
         e.preventDefault();
@@ -132,7 +132,19 @@ $(document).ready(function() {
                 },
                 success: function (msg) {
                     $('.indicator').css('display', 'none');
-                    $('input[value=Save]').before(msg.msg);
+                    // update message
+                    if (msg.status == 'success') {
+                        var message = "<div class='col-xs-12" +
+                                  " bg-success prof_updated'>" +
+                                  "Profile has been updated</div>";
+                        $('input[value=Save]').before(message)
+                    } else {
+                        var message = "<div class='col-xs-12" +
+                                  " bg-danger prof_updated'>" +
+                                  "Profile is not updated</div>";
+                        $('input[value=Save]').before(message)
+                    }
+                    // image update
                     if ($('div.div_image_preview').attr('img') == 'no-img') {
                         if (msg.image_src !== '') {
                             $('div.div_image_preview').append('<img width="200"' +
@@ -142,8 +154,6 @@ $(document).ready(function() {
                     } else {
                         $('div.div_image_preview > img').attr("src", msg.image_src);
                     }
-
-
                 }
 
             };

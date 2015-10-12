@@ -9,7 +9,6 @@ from forms import LoginForm, ProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_POST
 import json
-from PIL import Image, ImageOps
 
 
 def main(request):
@@ -55,21 +54,11 @@ def update_profile(request):
     if form.is_valid():
         form.save()
         profile = Profile.objects.get(id=int(identify))
-        if profile.photo:
-            image = Image.open(profile.photo)
-            imagefit = ImageOps.fit(image, (200, 200), Image.ANTIALIAS)
-            photo_path = profile.photo.url.replace("/", "", 1)
-            imagefit.save(photo_path, 'JPEG', quality=75)
-
-        profile_to_json = {'msg': "<div class='col-xs-12"
-                                  " bg-success prof_updated'>"
-                                  "Profile has been updated</div>",
+        profile_to_json = {'status': "success",
                            'image_src': profile.photo.url
                            if profile.photo else ''}
     else:
-        profile_to_json = {'msg': "<div class='col-xs-12"
-                                  " bg-danger prof_updated'>"
-                                  "Profile is not updated</div>",
+        profile_to_json = {'status': "error",
                            'image_src': profile.photo.url
                            if profile.photo else ''}
 
@@ -86,14 +75,9 @@ def login_view(request):
                             password=password)
         if user is not None:
             login(request, user)
-            profile = Profile.objects.get(user__username=username)
-            request.session['user_id'] = profile.id
-        else:
-            profile = False
-        profile_to_json = {'is_ok': True} if profile else {'is_ok': False}
+        profile_to_json = {'is_ok': True} if user else {'is_ok': False}
         return HttpResponse(json.dumps(profile_to_json),
                             content_type="application/json")
-
     return render(request, 'task/login.html', dict(form=form))
 
 
