@@ -8,6 +8,11 @@ from middleware import SaveHttpRequestMiddleware
 from forms import ProfileForm, LoginForm
 import json
 from django.utils.encoding import smart_unicode
+from django.utils.six import StringIO
+from django.template import Template, Context
+from apps.task.templatetags.task_tags import get_edit_admin_page
+from models import SavedSignals
+from django.core.management import call_command
 
 
 client = Client()
@@ -432,3 +437,54 @@ class FormTests(TestCase):
         self.assertFalse(form_min_length.is_valid())
         self.assertFalse(form_max_length.is_valid())
         self.assertFalse(form_no_data.is_valid())
+
+
+class CommandSignalTagTests(TestCase):
+    fixtures = ['initial_data.json']
+
+    def test_command_output(self):
+        """
+        Testing command
+        """
+        out = StringIO()
+        call_command('model_list', stdout=out)
+        self.assertIn('apps.task.models.Requests', out.getvalue())
+
+    def test_tag(self):
+        """
+        Testing signals
+        """
+        self.profile = Profile.objects.first()
+        self.template = Template("{% load task_tags %}"
+                                 " {% get_edit_admin_page profile.id %}")
+        rendered = self.template.render(Context({'profile': self.profile}))
+        self.assertIn(get_edit_admin_page(self.profile.id),
+                      rendered)
+
+    def test_signals(self):
+        """
+        Testing custom tag get_edit_admin_page
+        """
+        user = User.objects.create(username='guest',
+                                   password='guest')
+        Profile.objects.create(name=u"Василий",
+                               last_name=u"Петров",
+                               user=user)
+        # get record about Profile
+        save_profile = SavedSignals.objects.last()
+        # test status
+        self.assertEqual(save_profile.status, 'Created')
+        # get profile and update last name
+        profile = Profile.objects.first()
+        profile.last_name = "update"
+        profile.save()
+        # get record about profile
+        update_profile = SavedSignals.objects.last()
+        # test status
+        self.assertEqual(update_profile.status, 'Updated')
+        # delete profile
+        profile.delete()
+        # get record about profile
+        delete_profile = SavedSignals.objects.last()
+        # test status
+        self.assertEqual(delete_profile.status, 'Deleted')

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% load assets %}
+{% load task_tags %}
 {% block head %}
     <meta name="keywords" content="">
     <meta name="description" content="">
@@ -10,19 +11,14 @@
     {% assets "js_all" %}
         <script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
-    <title>Main</title>
+    <title>Edit profile</title>
 {% endblock %}
 {% block content %}
     <div class="indicator"><img src="{% static 'images/indicator.gif' %}"> </div>
     <div class="container">
         <div id="test_name" class="col-xs-8 col-xs-offset-2 text-center"><h1>42 Coffee Cups Test Assignment</h1></div>
+                <div class="edit-admin-div col-xs-2"><a href='{% get_edit_admin_page profile.id %}'>Edit(admin)</a></div>
         <div class="row">
-            <div class="col-xs-2 pull-right">
-                <div class="authenticated-div col-xs-2 col-xs-offset-2">
-                    <div>
-                    </div>
-                </div>
-            </div>
             <div class="col-xs-11 main-div">
                 <div class="row">
                     <div class='logged_in_greeting col-xs-12'>
@@ -84,4 +80,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
