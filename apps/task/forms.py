@@ -3,19 +3,6 @@ from models import Profile
 from widgets import DatePickerWidget
 
 
-class LoginForm(forms.Form):
-    username = forms.CharField(max_length=100, min_length=3,
-                               label=u"",
-                               widget=forms.TextInput(
-                                   attrs={'placeholder': 'Login',
-                                          'required': 'required'}))
-    password = forms.CharField(label=u"",
-                               widget=forms.TextInput(
-                                   attrs={'placeholder': 'Password',
-                                          'required': 'required',
-                                          'type': 'password'}))
-
-
 class ProfileForm(forms.ModelForm):
     id = forms.IntegerField(widget=forms.HiddenInput())
     name = forms.CharField(max_length=100,

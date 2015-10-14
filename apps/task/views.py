@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.http.response import HttpResponse, Http404, HttpResponseRedirect
+from django.http.response import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from models import Profile
 from models import Requests
-from forms import LoginForm, ProfileForm
-from django.contrib.auth import authenticate, login, logout
+from forms import ProfileForm
 from django.views.decorators.http import require_POST
 import json
-from django.contrib import messages
-from django.core.urlresolvers import reverse
 
 
 def main(request):
@@ -66,27 +63,3 @@ def update_profile(request):
 
     return HttpResponse(json.dumps(profile_to_json),
                         content_type="application/json")
-
-
-def login_view(request):
-    form = LoginForm(request.POST or None)
-    if form.is_valid():
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
-        user = authenticate(username=username,
-                            password=password)
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse('task:index'))
-        else:
-            messages.add_message(request,
-                                 messages.ERROR,
-                                 'Please enter a correct'
-                                 ' username or password.')
-    return render(request, 'task/login.html', dict(form=form))
-
-
-@login_required(login_url='/login/')
-def logout_view(request):
-    logout(request)
-    return HttpResponse(status=200)
