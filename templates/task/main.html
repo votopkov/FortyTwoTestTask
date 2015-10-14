@@ -18,7 +18,9 @@
                 <div class="authenticated-div">
                     {% if user.is_authenticated %}
                         <div class="header_link"><a href='{% url 'task:edit_profile' %}'>Edit</a></div>
-                        <div class="header_link"><a class="header_link" user_id="{{ user_profile.id }}" onclick="logout()" id="logout" href='#'>Logout</a></div>
+                        <div class="header_link">
+                            <a class="header_link" href='{% url 'task:logout' %}'>Logout</a>
+                        </div>
                     {% else %}
                         <a  href='{% url 'task:login' %}'>Login</a>
                     {% endif %}

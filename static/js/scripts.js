@@ -1,30 +1,3 @@
-function logout() {
-    user_id = $('#logout').attr('user_id');
-    $.ajax({
-        type: 'GET',
-        url: '/logout/',
-        data: {
-            user_id: user_id
-        },
-        beforeSend: function(){
-            $('.indicator').css('display', 'block');
-        },
-        error: function(xhr, textStatus) {
-            alert([xhr.status, textStatus]);
-            $('.indicator').css('display', 'none');
-        },
-        success: function(msg) {
-            $('.indicator').css('display', 'none');
-            $('.header_link').remove();
-            $('.main-div').html('You have already logout !<a href="/"> Go to main</a> or ' +
-                '<a href="/login/">Login</a>');
-            $('#logout').replaceWith("<a  href='/login/'>Login</a>");
-            $('.result, .hr, #requests').replaceWith(" ");
-
-        }
-    });
-}
-
 $(document).ready(function() {
 
 // update profile
