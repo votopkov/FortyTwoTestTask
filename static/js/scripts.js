@@ -27,55 +27,6 @@ function logout() {
 
 $(document).ready(function() {
 
-<<<<<<< HEAD
-  /*  $(".datepicker").datepicker({
-        dateFormat: "yy-mm-dd",
-        showButtonPanel: true,
-        changeYear: true,
-        yearRange: "1950:2010"
-    });
-
-
-*/
-
-// login
-    $('#login_form').submit(function(e) {
-        e.preventDefault();
-        username = $('#id_username').val();
-        password = $('#id_password').val();
-        csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
-        $.ajax({
-            type: 'POST',
-            url: '/login/',
-            data: {
-                username: username,
-                password: password,
-                csrfmiddlewaretoken: csrfmiddlewaretoken
-            },
-            beforeSend: function(){
-                $('.indicator').css('display', 'block');
-                $(this).prop('disabled', true)
-            },
-            error: function(xhr, textStatus) {
-                alert([xhr.status, textStatus]);
-                $('.indicator').css('display', 'none');
-            },
-            success: function(msg) {
-                $('.indicator').css('display', 'none');
-                if (msg.is_ok){
-                    window.location.href = '/'
-                }
-                else {
-                    $('.login-tip').remove();
-                    $('.login-error').remove();
-                    $('.login-form-title').prepend("<div class='text-danger login-tip'>" +
-                        "Please enter a correct username and password.</div>")
-                }}
-        });
-    });
-
-=======
->>>>>>> ticket_8
 // update profile
     var update_profile_form = $('#update-profile-form');
     $.validator.addMethod(
