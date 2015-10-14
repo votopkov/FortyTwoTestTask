@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.http.response import HttpResponse, Http404
+from django.http.response import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from models import Profile
 from models import Requests
@@ -9,6 +9,8 @@ from forms import LoginForm, ProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.http import require_POST
 import json
+from django.contrib import messages
+from django.core.urlresolvers import reverse
 
 
 def main(request):
@@ -75,9 +77,12 @@ def login_view(request):
                             password=password)
         if user is not None:
             login(request, user)
-        profile_to_json = {'is_ok': True} if user else {'is_ok': False}
-        return HttpResponse(json.dumps(profile_to_json),
-                            content_type="application/json")
+            return HttpResponseRedirect(reverse('task:index'))
+        else:
+            messages.add_message(request,
+                                 messages.ERROR,
+                                 'Please enter a correct'
+                                 ' username or password.')
     return render(request, 'task/login.html', dict(form=form))
 
 

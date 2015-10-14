@@ -33,13 +33,12 @@ class ProfileForm(forms.ModelForm):
     photo = forms.ImageField(required=False,
                              widget=forms.FileInput)
     email = forms.EmailField(max_length=100,
-                             min_length=3,
                              widget=forms.TextInput(attrs={'class':
                                                            'form-control'}))
-    jabber = forms.CharField(max_length=100,
-                             min_length=3,
-                             widget=forms.TextInput(attrs={'class':
-                                                           'form-control'}))
+    jabber = forms.EmailField(max_length=100,
+                              min_length=3,
+                              widget=forms.TextInput(attrs={'class':
+                                                            'form-control'}))
     skype = forms.CharField(max_length=100,
                             min_length=3,
                             widget=forms.TextInput(attrs={'class':
