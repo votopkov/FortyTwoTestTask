@@ -2,8 +2,6 @@
 from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image, ImageOps
-from django.db.models.signals import post_save
-from django.dispatch.dispatcher import receiver
 
 
 class Profile(models.Model):
@@ -31,14 +29,12 @@ class Profile(models.Model):
     def __unicode__(self):
         return self.last_name
 
-
-@receiver(post_save, sender=Profile)
-def post_save(instance, **kwargs):
-    if instance.photo:
-        image = Image.open(instance.photo)
-        imagefit = ImageOps.fit(image, (200, 200), Image.ANTIALIAS)
-        photo_path = instance.photo.url.replace("/", "", 1)
-        imagefit.save(photo_path, 'JPEG', quality=75)
+    def save(self, *args, **kwargs):
+        super(Profile, self).save(*args, **kwargs)
+        if self.photo:
+            image = Image.open(self.photo)
+            imagefit = ImageOps.fit(image, (200, 200), Image.ANTIALIAS)
+            imagefit.save(self.photo.path, 'JPEG', quality=75)
 
 
 class Requests(models.Model):

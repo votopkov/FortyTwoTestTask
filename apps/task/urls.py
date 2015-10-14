@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
 from . import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = patterns('',
@@ -13,9 +14,10 @@ urlpatterns = patterns('',
                        url(r'^request_detail/(?P<identify>[0-9]+)/$',
                            views.request_detail,
                            name='request_detail'),
-                       url(r'^login/$', views.login_view, name='login'),
-                       url(r'^logout/$', views.logout_view,
-                           name='logout'),
+                       url(r'^login/$', auth_views.login, name='login'),
+                       url(r'^logout/$', auth_views.logout, {
+                           'next_page': '/'
+                       }, name='logout'),
                        url(r'^update_profile/$', views.update_profile,
                            name='update_profile'),
                        )

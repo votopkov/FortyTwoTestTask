@@ -5,9 +5,9 @@ from django.test import Client
 from django.test import TestCase, RequestFactory
 from models import Profile, Requests
 from middleware import SaveHttpRequestMiddleware
-from forms import ProfileForm, LoginForm
 import json
 from django.utils.encoding import smart_unicode
+from forms import ProfileForm
 
 
 client = Client()
@@ -88,26 +88,6 @@ class ProfileMethodTests(TestCase):
         self.assertTrue('<h1>42 Coffee Cups Test Assignment</h1>'
                         in response.content)
 
-    def test_send_post_data_login(self):
-        """
-        Test login user
-        """
-        user = {'username': 'admin',
-                'password': 'admin'}
-        response = self.client.post(reverse('task:login'), user)
-        self.assertEqual(response.status_code, 302)
-
-    def test_send_false_post_data_login(self):
-        """
-        Test not login with not valid data
-        """
-        user = {'username': 'admin',
-                'password': '1234'}
-        response = self.client.post(reverse('task:login'), user)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Please enter a correct'
-                                      ' username or password.')
-
     def test_entering_edit_profile(self):
         # test login required
         test_login_req_response = client.post(
@@ -182,15 +162,6 @@ class ProfileMethodTests(TestCase):
         self.assertEqual(profile.name, smart_unicode(u'Василий'))
         # test if Vasiliy has new email
         self.assertNotEqual(profile.email, 'mail@mail.ua')
-
-    def test_logout(self):
-        response = self.client.get(reverse('task:logout'))
-        # test login required
-        self.assertEqual(response.status_code, 302)
-        # login
-        self.client.login(username='admin', password='admin')
-        response_2 = self.client.get(reverse('task:logout'))
-        self.assertEqual(response_2.status_code, 200)
 
 
 class ProfileNoDataMethodTests(TestCase):
@@ -368,7 +339,7 @@ class SaveHttpRequestNoDataTests(TestCase):
         self.assertEqual(response_2.status_code, 200)
 
 
-class FormTests(TestCase):
+class FormProfileTests(TestCase):
 
     def test_profile_form(self):
         # initial data to from
@@ -382,24 +353,20 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertTrue(form.is_valid())
-        # initial data to form (not valid)
-        failed_form_data = {
-            'id': 2,
-            'name': 'name',
-            'last_name': 'last_name'
-        }
-        # set failed data to form
-        failed_form = ProfileForm(data=failed_form_data)
-        # test if form invalid
-        self.assertFalse(failed_form.is_valid())
+        self.form = ProfileForm(data=form_data)
+        self.assertTrue(self.form.is_valid())
+
+
+class FormProfileFailedTests(TestCase):
+
+    def tearDown(self):
+        self.form = ProfileForm(data=self.form_data)
+        self.assertFalse(self.form.is_valid())
 
     def test_profile_form_name_field(self):
         # initial data to from with fails
         # name max length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin' * 21,  # max length 100 symbols
             'last_name': 'admin',
@@ -409,13 +376,13 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
+        self.form = ProfileForm(data=self.form_data)
         # test if form valid
-        self.assertFalse(form.is_valid())
+        self.assertFalse(self.form.is_valid())
 
         # initial data to from with fails
         # name min length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'ad',  # min length 3 symbols
             'last_name': 'admin',
@@ -425,12 +392,10 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
+        self.form = ProfileForm(data=self.form_data)
 
         # initial data to from with blank name
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': '',  # required field
             'last_name': 'admin',
@@ -439,15 +404,11 @@ class FormTests(TestCase):
             'jabber': 'jabber@jabber.ua',
             'skype': 'skype',
         }
-        # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
 
     def test_profile_form_last_name_field(self):
         # initial data to from with fails
         # last_name max length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin' * 21,  # max length 100 symbols
@@ -457,13 +418,11 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
+        self.form = ProfileForm(data=self.form_data)
 
         # initial data to from with fails
         # last_name min length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'ad',  # min length 3 symbols
@@ -473,12 +432,12 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
+        self.form = ProfileForm(data=self.form_data)
         # test if form valid
-        self.assertFalse(form.is_valid())
+        self.assertFalse(self.form.is_valid())
 
         # initial data to from with blank last_name
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': '',  # required field
@@ -487,15 +446,11 @@ class FormTests(TestCase):
             'jabber': 'jabber@jabber.ua',
             'skype': 'skype',
         }
-        # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
 
     def test_profile_form_date_of_birth_field(self):
         # initial data to from with fails
         # date format
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -505,13 +460,13 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
+        self.form = ProfileForm(data=self.form_data)
         # test if form valid
-        self.assertFalse(form.is_valid())
+        self.assertFalse(self.form.is_valid())
 
         # initial data to from with blank
         # date of birth
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -520,15 +475,11 @@ class FormTests(TestCase):
             'jabber': 'jabber@jabber.ua',
             'skype': 'skype',
         }
-        # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
 
     def test_profile_form_email_field(self):
         # initial data to from with fails
         # email max length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -538,13 +489,13 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
+        self.form = ProfileForm(data=self.form_data)
         # test if form valid
-        self.assertFalse(form.is_valid())
+        self.assertFalse(self.form.is_valid())
 
         # initial data to from with not valid
         # email address
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'ad',
@@ -554,13 +505,13 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
+        self.form = ProfileForm(data=self.form_data)
         # test if form valid
-        self.assertFalse(form.is_valid())
+        self.assertFalse(self.form.is_valid())
 
         # initial data to from with blank
         # email address
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'ad',
@@ -569,15 +520,11 @@ class FormTests(TestCase):
             'jabber': 'jabber@jabber.ua',
             'skype': 'skype',
         }
-        # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
 
     def test_profile_form_jabber_field(self):
         # initial data to from with fails
         # jabber max length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -587,12 +534,12 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
+        self.form = ProfileForm(data=self.form_data)
         # test if form valid
-        self.assertFalse(form.is_valid())
+        self.assertFalse(self.form.is_valid())
 
         # initial data to from with fails jabber input
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -602,13 +549,13 @@ class FormTests(TestCase):
             'skype': 'skype',
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
+        self.form = ProfileForm(data=self.form_data)
         # test if form valid
-        self.assertFalse(form.is_valid())
+        self.assertFalse(self.form.is_valid())
 
         # initial data to from with blank
         # jabber field
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'ad',
@@ -617,15 +564,11 @@ class FormTests(TestCase):
             'jabber': '',   # required
             'skype': 'skype',
         }
-        # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
 
     def test_profile_form_skype_field(self):
         # initial data to from with fails
         # skype max length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -635,13 +578,13 @@ class FormTests(TestCase):
             'skype': 'skype' * 21,  # max length 100 symbols
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
+        self.form = ProfileForm(data=self.form_data)
         # test if form valid
-        self.assertFalse(form.is_valid())
+        self.assertFalse(self.form.is_valid())
 
         # initial data to from with fails
         # skype min length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -651,12 +594,10 @@ class FormTests(TestCase):
             'skype': 'sk',  # min length 3 symbols
         }
         # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
+        self.form = ProfileForm(data=self.form_data)
 
         # initial data to from with blank name
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -665,15 +606,11 @@ class FormTests(TestCase):
             'jabber': 'jabber@jabber.ua',
             'skype': '',  # required field
         }
-        # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
 
     def test_profile_form_other_contacts_field(self):
         # initial data to from with fails
         # other_contacts max length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -683,15 +620,11 @@ class FormTests(TestCase):
             'skype': 'skype',
             'other_contacts': 'testword12' * 101  # max length 1000 symbols
         }
-        # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
 
     def test_profile_form_bio_field(self):
         # initial data to from with fails
         # bio max length
-        form_data = {
+        self.form_data = {
             'id': 1,
             'name': 'admin',
             'last_name': 'admin',
@@ -701,42 +634,3 @@ class FormTests(TestCase):
             'skype': 'skype',
             'bio': 'testword12' * 101  # max length 1000 symbols
         }
-        # set initial data to from
-        form = ProfileForm(data=form_data)
-        # test if form valid
-        self.assertFalse(form.is_valid())
-
-    def test_login_form(self):
-        # initial data to from
-        form_data = {
-            'username': 'admin',
-            'password': 'password'
-        }
-        # length is less than 3(username)
-        failed_min_length = {
-            'username': 'ad',
-            'password': '12345'
-        }
-        # length is getter than 100(password)
-        failed_max_length = {
-            'username': 'admin' * 200,
-            'password': 'assd'
-        }
-        # no data
-        failed_no_input = {
-            'username': '',
-            'password': ''
-        }
-        # set valid initial data
-        form = LoginForm(data=form_data)
-        # not valid min length of username field
-        form_min_length = LoginForm(data=failed_min_length)
-        # not valid max length of username field
-        form_max_length = LoginForm(data=failed_max_length)
-        # no data in form
-        form_no_data = LoginForm(data=failed_no_input)
-        # test form
-        self.assertTrue(form.is_valid())
-        self.assertFalse(form_min_length.is_valid())
-        self.assertFalse(form_max_length.is_valid())
-        self.assertFalse(form_no_data.is_valid())
