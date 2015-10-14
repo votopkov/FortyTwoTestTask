@@ -27,6 +27,7 @@ function logout() {
 
 $(document).ready(function() {
 
+<<<<<<< HEAD
   /*  $(".datepicker").datepicker({
         dateFormat: "yy-mm-dd",
         showButtonPanel: true,
@@ -73,6 +74,8 @@ $(document).ready(function() {
         });
     });
 
+=======
+>>>>>>> ticket_8
 // update profile
     var update_profile_form = $('#update-profile-form');
     $.validator.addMethod(

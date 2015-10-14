@@ -23,6 +23,13 @@
                                 <div>username - admin</div>
                                 <div>password - admin</div>
                             </div>
+                            {% if messages %}
+                                <ul class="messages list-unstyled">
+                                    {% for message in messages %}
+                                        <li{% if message.tags %} class="text-{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                             <div class="login-form-title">Login</div>
                             <form id="login_form" action="/login/" method="post">
                                 {% csrf_token %}
