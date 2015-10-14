@@ -1,26 +1,16 @@
 from django import forms
 from django.contrib.staticfiles.storage import staticfiles_storage
-from django.utils.safestring import mark_safe
+from django.conf import settings
 
-
-class DatePickerWidget(forms.DateInput):
-
+class AdminDateWidget(forms.TextInput):
     class Media:
-        css = {
-            'all': (staticfiles_storage.url('css/jquery-ui.css'),)
-        }
-        js = (
-            staticfiles_storage.url('js/jquery-ui.min.js'),
-        )
+        js = (settings.ADMIN_MEDIA_PREFIX + "js/calendar.js",
+              settings.ADMIN_MEDIA_PREFIX + "js/admin/DateTimeShortcuts.js")
 
-    def __init__(self, params='', attrs=None):
-        self.params = params
-        super(DatePickerWidget, self).__init__(attrs=attrs)
-
-    def render(self, name, value, attrs=None):
-        rendered = super(DatePickerWidget, self).render(name,
-                                                        value,
-                                                        attrs=attrs)
-        return rendered + mark_safe(u'''<script type="text/javascript">
-            $('#id_%s').datepicker({%s});
-            </script>''' % (name, self.params,))
+    def __init__(self, attrs={}):
+        attrs.update({'class': 'vDateField',
+                      'size': '10',
+                      'onfocus': 'javascript:DateTimeShortcuts.openCalendar(0);',
+                      'onclick' : 'javascript:DateTimeShortcuts.openCalendar(0);'
+                      })
+        super(AdminDateWidget, self).__init__(attrs=attrs)

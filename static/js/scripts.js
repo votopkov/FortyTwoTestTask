@@ -33,7 +33,10 @@ $(document).ready(function() {
         changeYear: true,
         yearRange: "1950:2010"
     });
+
+
 */
+
 // login
     $('#login_form').submit(function(e) {
         e.preventDefault();
