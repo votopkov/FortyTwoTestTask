@@ -17,7 +17,7 @@ def main(request):
     return render(request, 'task/main.html', context)
 
 
-@login_required(login_url='/login/')
+@login_required()
 def edit_profile(request):
     profile = Profile.objects.first()
     user_form = ProfileForm(instance=profile)
@@ -37,14 +37,14 @@ def request_list_ajax(request):
         raise Http404
 
 
-@login_required(login_url='/login/')
+@login_required()
 def request_detail(request, identify):
     obj = get_object_or_404(Requests, pk=identify)
     context = dict(obj=obj)
     return render(request, 'task/request_detail.html', context)
 
 
-@login_required(login_url='/login/')
+@login_required()
 @require_POST
 def update_profile(request):
     identify = request.POST.get('id')
@@ -59,7 +59,7 @@ def update_profile(request):
     else:
         profile_to_json = {'status': "error",
                            'image_src': profile.photo.url
-                           if profile.photo else ''}
+                           if profile.photo else ' '}
 
     return HttpResponse(json.dumps(profile_to_json),
                         content_type="application/json")

@@ -104,6 +104,8 @@ STATICFILES_DIRS = (
 
 LOGIN_REDIRECT_URL = '/'
 
+LOGIN_URL = '/login/'
+
 MEDIA_URL = '/media/'
 
 TEMPLATE_DIRS = (
