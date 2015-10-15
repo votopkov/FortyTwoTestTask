@@ -40,6 +40,8 @@
                                     <div class="div_image_preview">
                                         {% if profile.photo  %}
                                             <img id="image_preview" width="200"  src="{{ profile.photo.url }}">
+                                            {% else %}
+                                            <img id="image_preview" width="200"  src="{% static 'images/no-avatar.jpeg' %}">
                                         {% endif %}
                                     </div>
                                 </div>
