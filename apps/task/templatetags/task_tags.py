@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from django import template
-from django.core import urlresolvers
+from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.models import ContentType
 
 register = template.Library()
 
 
 @register.simple_tag
-def get_edit_admin_page(profile_id):
-    url_to_admin_edit_page = urlresolvers.reverse('admin:task_profile_change',
-                                                  args=(profile_id,))
-    return url_to_admin_edit_page
+def get_edit_admin_page(object):
+    return reverse('admin:%s_%s_change' % (object._meta.app_label,
+                                           object.__class__.__name__.lower()),
+                   args=(object.id,))

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% load task_tags %}
 {% block head %}
     <meta name="keywords" content="">
     <meta name="description" content="">
@@ -17,12 +18,15 @@
             <div class="col-xs-2 pull-right">
                 <div class="authenticated-div">
                     {% if user.is_authenticated %}
-                        <div class="header_link"><a href='{% url 'task:edit_profile' %}'>Edit</a></div>
-                        <div class="header_link">
-                            <a class="header_link" href='{% url 'task:logout' %}'>Logout</a>
+                        <div class="logout-div">
+                            <a href='{% url 'task:logout' %}'>Logout</a>
                         </div>
+                        <div class="header_link"><a href='{% url 'task:edit_profile' %}'>Edit</a></div>
+                        <a href='{% get_edit_admin_page profile %}'>(admin)</a>
                     {% else %}
-                        <a  href='{% url 'task:login' %}'>Login</a>
+                        <div class="logout-div">
+                            <a href='{% url 'task:login' %}'>Login</a>
+                        </div>
                     {% endif %}
                 </div>
             </div>

@@ -131,11 +131,11 @@ h1 {
 
 .header_link {
     display: inline-block;
-    margin-right:10px;
 }
 
-.logout_div {
-    margin-bottom:10px;
+.logout-div {
+    padding-top:10px;
+    margin-bottom:20px;
 }
 
 .edit-admin-div {
