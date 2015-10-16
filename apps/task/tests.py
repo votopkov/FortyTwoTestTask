@@ -88,6 +88,23 @@ class ProfileMethodTests(TestCase):
         self.assertTrue('<h1>42 Coffee Cups Test Assignment</h1>'
                         in response.content)
 
+    def test_edit_profile_html(self):
+        """
+        Test html on the edit profile page
+        """
+        # login
+        self.client.login(username='admin', password='admin')
+        # get edit profile page
+        response = self.client.get(reverse('task:edit_profile'))
+        # test title on the page
+        self.assertTrue('<h1>42 Coffee Cups Test Assignment</h1>'
+                        in response.content)
+        # test form on the page
+        self.assertTrue('<form action="/update_profile/" method="post"'
+                        ' id="update-profile-form" '
+                        'enctype="multipart/form-data">'
+                        in response.content)
+
     def test_entering_edit_profile(self):
         # test login required
         test_login_req_response = client.get(
