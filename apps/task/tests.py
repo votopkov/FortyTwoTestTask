@@ -168,21 +168,12 @@ class ProfileMethodTests(TestCase):
         """
         Testing not update profile unvalid data
         """
-        form_data = {
-            'id': ' ',
-            'name': ' ',
-            'last_name': ' ',
-            'date_of_birth': '',
-            'email': ' ',
-            'jabber': ' ',
-            'skype': ' ',
-        }
-        form = ProfileForm(data=form_data)
-        self.assertIn(u'Enter a whole number',
+        form = ProfileForm(data={})
+        self.assertIn(u'This field is required',
                       str(form['id'].errors))
-        self.assertIn(u'Ensure this value has at least 3 characters',
+        self.assertIn(u'This field is required',
                       str(form['name'].errors))
-        self.assertIn(u'Ensure this value has at least 3 characters',
+        self.assertIn(u'This field is required',
                       str(form['last_name'].errors))
         self.assertIn(u'This field is required',
                       str(form['date_of_birth'].errors))
@@ -190,7 +181,7 @@ class ProfileMethodTests(TestCase):
                       str(form['email'].errors))
         self.assertIn(u'This field is required',
                       str(form['jabber'].errors))
-        self.assertIn(u'Ensure this value has at least 3 characters',
+        self.assertIn(u'This field is required',
                       str(form['skype'].errors))
 
 
