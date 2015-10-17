@@ -421,3 +421,30 @@ class CommandSignalTagTests(TestCase):
         user.delete()
         # test if user is deleted
         self.assertEqual(SavedSignals.objects.last().status, 'Delete')
+
+
+class RequestPriorityFieldTest(TestCase):
+    fixtures = ['initial_data.json']
+
+    def test_request_priority_field(self):
+        """
+        Test priority ordering
+        at first order by -pub_date, then priority
+        They all have default priority - 9
+        There are 311 Request entries in db
+        """
+        # I will make it the last by adding to it priority 1
+        # get request with id - 7
+        req = Requests.objects.get(id=7)
+        # get first request
+        req_first = Requests.objects.first()
+        # test if they are not equal
+        self.assertNotEqual(req.id, req_first.id)
+        # add to request with id-7 priority 1
+        req.priority = 1
+        # save it
+        req.save()
+        # get first request after
+        # adding priority to request with id-7
+        new_req_first = Requests.objects.first()
+        self.assertEqual(req.id, new_req_first.id)

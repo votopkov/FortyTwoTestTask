@@ -28,9 +28,11 @@ $(document).ready(function() {
                                 }
                                 $('body').attr('new_request', new_request)
                             }
-                            result += '<tr><td><a last_request=' + msg[key]['pk'] + ' href=\'/request_detail/' + msg[key]['pk'] + '/\'>' + msg[key]['pk'] + '</a></td>';
+                            result += '<tr><td>' +
+                                '<a last_request=' + msg[key]['pk'] + ' href=\'/request_detail/' + msg[key]['pk'] + '/\'>' + msg[key]['pk'] + '</a></td>';
                         } else {
-                            result += '<tr><td><a href=\'/request_detail/' + msg[key]['pk'] + '/\'>' + msg[key]['pk'] + '</a></td>';
+                            result += '<tr><td>' +
+                                '<a href=\'/request_detail/' + msg[key]['pk'] + '/\'>' + msg[key]['pk'] + '</a></td>';
                         }
 
                     }
@@ -43,7 +45,10 @@ $(document).ready(function() {
                         }
 
                     });
-                    $('.result').replaceWith('<div class="col-xs-12 result"><table class="table table-bordered text-center"><tr><th>ID</th><th>Date</th><th>Path</th></tr><tr>' + result + '</tr></table></div>');
+                    $('.result').replaceWith('<div class="col-xs-12 result">' +
+                        '<table class="table table-bordered text-center">' +
+                        '<tr><th>ID</th><th>Date</th><th>Path</th>' +
+                        '<th>Priority</th></tr><tr>' + result + '</tr></table></div>');
                 });
                 setTimeout(load_requests, 3000);
             }
