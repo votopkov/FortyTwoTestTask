@@ -13,8 +13,6 @@ import os
 from django.contrib import messages
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-print(os.path.join(BASE_DIR, 'apps/task/fixtures/'))
-
 FIXTURE_DIRS = (
    os.path.join(BASE_DIR, 'apps/task/fixtures/'),
 )
