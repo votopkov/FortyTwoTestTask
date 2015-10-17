@@ -55,4 +55,4 @@ class SavedSignals(models.Model):
     status = models.CharField(max_length=250)
 
     def __unicode__(self):
-        return self.title + " - " + str(self.id)
+        return self.title
