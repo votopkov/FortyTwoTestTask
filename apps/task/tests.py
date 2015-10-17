@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase, RequestFactory
-from models import Profile, Requests
+from models import Profile, Requests, SavedSignals
 from middleware import SaveHttpRequestMiddleware
 import json
 from django.utils.encoding import smart_unicode
@@ -394,11 +394,30 @@ class CommandSignalTagTests(TestCase):
 
     def test_tag(self):
         """
-        Testing signals
+        Testing custom tag
         """
-        self.profile = Profile.objects.first()
-        self.template = Template("{% load task_tags %}"
-                                 " {% get_edit_admin_page profile.id %}")
-        rendered = self.template.render(Context({'profile': self.profile}))
-        self.assertIn(get_edit_admin_page(self.profile.id),
+        profile = Profile.objects.first()
+        template = Template("{% load task_tags %}"
+                            "{% get_edit_admin_page profile %}")
+        rendered = template.render(Context({'profile': profile}))
+        self.assertIn(get_edit_admin_page(profile),
                       rendered)
+
+    def test_signals_update(self):
+        # get the last id
+        self.assertEqual(SavedSignals.objects.last().id, 706)
+        User.objects.create_user('signal', ' ', 'signal')
+        # test if signal is working
+        self.assertEqual(SavedSignals.objects.last().id, 707)
+        # test status of entry about user
+        self.assertEqual(SavedSignals.objects.last().status, 'Create')
+        # update user
+        user = User.objects.get(username='signal')
+        user.username = 'update_signal'
+        user.save()
+        # test status of entry about user
+        self.assertEqual(SavedSignals.objects.last().status, 'Update')
+        # delete user
+        user.delete()
+        # test if user is deleted
+        self.assertEqual(SavedSignals.objects.last().status, 'Delete')

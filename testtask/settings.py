@@ -13,6 +13,12 @@ import os
 from django.contrib import messages
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+print(os.path.join(BASE_DIR, 'apps/task/fixtures/'))
+
+FIXTURE_DIRS = (
+   os.path.join(BASE_DIR, 'apps/task/fixtures/'),
+)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
