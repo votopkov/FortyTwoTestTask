@@ -14,6 +14,7 @@ PRIORITY_CHOICES = (
     (7, 7),
     (8, 8),
     (9, 9),
+    (10, 10),
 )
 
 
@@ -55,7 +56,7 @@ class Requests(models.Model):
     request = models.TextField()
     path = models.CharField(max_length=250, blank=True, null=True)
     pub_date = models.DateTimeField(auto_now_add=True)
-    priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=9)
+    priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=10)
 
     class Meta:
         ordering = ['priority', '-pub_date']
