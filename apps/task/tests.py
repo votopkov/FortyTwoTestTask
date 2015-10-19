@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-import cStringIO
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase, RequestFactory
-import sys
 from models import Profile, Requests, SavedSignals
 from middleware import SaveHttpRequestMiddleware
 import json
