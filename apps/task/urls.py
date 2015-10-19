@@ -11,9 +11,6 @@ urlpatterns = patterns('',
                            name='request_list'),
                        url(r'^request_list_ajax/$', views.request_list_ajax,
                            name='request_list_ajax'),
-                       url(r'^request_detail/(?P<identify>[0-9]+)/$',
-                           views.request_detail,
-                           name='request_detail'),
                        url(r'^login/$', auth_views.login, name='login'),
                        url(r'^logout/$', auth_views.logout, {
                            'next_page': '/'
