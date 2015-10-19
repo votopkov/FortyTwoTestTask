@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import cStringIO
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase, RequestFactory
+import sys
 from models import Profile, Requests, SavedSignals
 from middleware import SaveHttpRequestMiddleware
 import json
@@ -12,6 +14,7 @@ from django.template import Template, Context
 from apps.task.templatetags.task_tags import edit_link
 from django.core.management import call_command
 from forms import ProfileForm
+import subprocess
 
 
 client = Client()
@@ -390,15 +393,20 @@ class CommandTests(TestCase):
         """
         out = StringIO()
         call_command('model_list', stderr=out)
-        self.assertIn('apps.task.models.Requests', out.getvalue())
+        self.assertIn('apps.task.models.Requests',
+                      out.getvalue())
+        self.assertIn('Error: apps.task.models.Profile',
+                      out.getvalue())
 
-    def test_command_stderr(self):
+    def test_model_list_script(self):
         """
-        Testing stderr
+        Testing command by executing models_lish.sh
         """
-        out = StringIO()
-        call_command('model_list', stderr=out)
-        self.assertIn('Error', out.getvalue())
+        out = subprocess.Popen("./model_list.sh",
+                               stderr=subprocess.PIPE,
+                               shell=True)
+        self.assertIn('Error: apps.task.models.Profile',
+                      str(out.communicate()))
 
 
 class SignalsTests(TestCase):
@@ -409,7 +417,7 @@ class SignalsTests(TestCase):
 
     def test_count_SavedSignals(self):
         """
-        Must be 707 entries
+        Must be 103 entries
         """
         self.assertEqual(SavedSignals.objects.all().count(), 103)
 
@@ -443,6 +451,15 @@ class SignalsTests(TestCase):
         # test if user is deleted
         self.assertEqual(SavedSignals.objects.last().status, 'Delete')
 
+    def test_signals_not_work_on_not_allowed_model(self):
+        SavedSignals.objects.create(title='Title', status="Status")
+        # signal not working if SavedSignals created/updated/deleted
+        # get entry about creating SavedSignals
+        signal = SavedSignals.objects.last()
+        # test if SavedSignals entry has not got create/update/delete
+        # status
+        self.assertEqual(signal.status, "Status")
+
 
 class TagTests(TestCase):
     fixtures = ['initial_data.json']
@@ -468,3 +485,16 @@ class TagTests(TestCase):
         rendered = template.render(Context({'request': req}))
         self.assertIn(edit_link(req),
                       rendered)
+
+    def test_tag_on_the_page(self):
+        """
+        Test tag on the index page
+        """
+        # login
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(reverse('task:index'))
+        self.assertIn('/admin/task/profile/', response.content)
+
+    def test_tag_on_the_page_not_login_user(self):
+        response = self.client.get(reverse('task:index'))
+        self.assertNotIn('/admin/task/profile/', response.content)
