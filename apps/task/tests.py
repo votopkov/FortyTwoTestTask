@@ -9,7 +9,7 @@ import json
 from django.utils.encoding import smart_unicode
 from django.utils.six import StringIO
 from django.template import Template, Context
-from apps.task.templatetags.task_tags import get_edit_admin_page
+from apps.task.templatetags.task_tags import edit_link
 from django.core.management import call_command
 from forms import ProfileForm
 
@@ -381,7 +381,7 @@ class SaveHttpRequestNoDataTests(TestCase):
         self.assertEqual(response_2.status_code, 200)
 
 
-class CommandSignalTagTests(TestCase):
+class CommandTests(TestCase):
     fixtures = ['initial_data.json']
 
     def test_command_output(self):
@@ -389,8 +389,63 @@ class CommandSignalTagTests(TestCase):
         Testing command
         """
         out = StringIO()
-        call_command('model_list', stdout=out)
+        call_command('model_list', stderr=out)
         self.assertIn('apps.task.models.Requests', out.getvalue())
+
+    def test_command_stderr(self):
+        """
+        Testing stderr
+        """
+        out = StringIO()
+        call_command('model_list', stderr=out)
+        self.assertIn('Error', out.getvalue())
+
+
+class SignalsTests(TestCase):
+    fixtures = ['initial_data.json']
+
+    def setUp(self):
+        User.objects.create_user('signal', ' ', 'signal')
+
+    def test_count_SavedSignals(self):
+        """
+        Must be 707 entries
+        """
+        self.assertEqual(SavedSignals.objects.all().count(), 707)
+
+    def test_signals_create_entry(self):
+        """
+        Test entry about user create
+        """
+        # test status about user
+        self.assertEqual(SavedSignals.objects.last().status, 'Create')
+
+    def test_signals_update_entry(self):
+        """
+        Test entry about user update
+        """
+        # get user
+        user = User.objects.get(username='signal')
+        # update username
+        user.username = 'update_signal'
+        # save
+        user.save()
+        # test status of entry about user
+        self.assertEqual(SavedSignals.objects.last().status, 'Update')
+
+    def test_signals_delete_entry(self):
+        """
+        Test entry about user delete
+        """
+        user = User.objects.get(username='signal')
+        # delete user
+        user.delete()
+        # test if user is deleted
+        self.assertEqual(SavedSignals.objects.last().status, 'Delete')
+
+
+class TagTests(TestCase):
+    fixtures = ['initial_data.json']
 
     def test_tag(self):
         """
@@ -398,26 +453,18 @@ class CommandSignalTagTests(TestCase):
         """
         profile = Profile.objects.first()
         template = Template("{% load task_tags %}"
-                            "{% get_edit_admin_page profile %}")
+                            "{% edit_link profile %}")
         rendered = template.render(Context({'profile': profile}))
-        self.assertIn(get_edit_admin_page(profile),
+        self.assertIn(edit_link(profile),
                       rendered)
 
-    def test_signals_update(self):
-        # get the last id
-        self.assertEqual(SavedSignals.objects.last().id, 706)
-        User.objects.create_user('signal', ' ', 'signal')
-        # test if signal is working
-        self.assertEqual(SavedSignals.objects.last().id, 707)
-        # test status of entry about user
-        self.assertEqual(SavedSignals.objects.last().status, 'Create')
-        # update user
-        user = User.objects.get(username='signal')
-        user.username = 'update_signal'
-        user.save()
-        # test status of entry about user
-        self.assertEqual(SavedSignals.objects.last().status, 'Update')
-        # delete user
-        user.delete()
-        # test if user is deleted
-        self.assertEqual(SavedSignals.objects.last().status, 'Delete')
+    def test_tag_add_another_object(self):
+        """
+        Give request object to tag
+        """
+        req = Requests.objects.first()
+        template = Template("{% load task_tags %}"
+                            "{% edit_link request %}")
+        rendered = template.render(Context({'request': req}))
+        self.assertIn(edit_link(req),
+                      rendered)

@@ -33,7 +33,8 @@ class Profile(models.Model):
         super(Profile, self).save(*args, **kwargs)
         if self.photo:
             image = Image.open(self.photo)
-            imagefit = ImageOps.fit(image, (200, 200), Image.ANTIALIAS)
+            imagefit = ImageOps.fit(image, (200, 200),
+                                    Image.ANTIALIAS)
             imagefit.save(self.photo.path, 'JPEG', quality=75)
 
 
@@ -56,3 +57,6 @@ class SavedSignals(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+import signals
