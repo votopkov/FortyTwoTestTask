@@ -4,10 +4,6 @@
 {% block head %}
     <meta name="keywords" content="">
     <meta name="description" content="">
-    <link rel="stylesheet" href="{% static 'bootstrap-3.3.5-dist/css/bootstrap.min.css' %}"/>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-    <script type="text/javascript" src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/scripts.js' %}"></script>
     <title>Main</title>
 {% endblock %}
 {% block content %}
@@ -22,7 +18,7 @@
                             <a href='{% url 'task:logout' %}'>Logout</a>
                         </div>
                         <div class="header_link"><a href='{% url 'task:edit_profile' %}'>Edit</a></div>
-                        <a href='{% get_edit_admin_page profile %}'>(admin)</a>
+                        <a href='{% edit_link profile %}'>(admin)</a>
                     {% else %}
                         <div class="logout-div">
                             <a href='{% url 'task:login' %}'>Login</a>

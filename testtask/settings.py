@@ -42,7 +42,6 @@ INSTALLED_APPS = (
     'django.contrib.admin.widgets',
     'apps.task',
     'south',
-    'django_assets',
 )
 
 MIDDLEWARE_CLASSES = (

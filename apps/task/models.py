@@ -47,7 +47,8 @@ class Profile(models.Model):
         super(Profile, self).save(*args, **kwargs)
         if self.photo:
             image = Image.open(self.photo)
-            imagefit = ImageOps.fit(image, (200, 200), Image.ANTIALIAS)
+            imagefit = ImageOps.fit(image, (200, 200),
+                                    Image.ANTIALIAS)
             imagefit.save(self.photo.path, 'JPEG', quality=75)
 
 
@@ -56,7 +57,9 @@ class Requests(models.Model):
     request = models.TextField()
     path = models.CharField(max_length=250, blank=True, null=True)
     pub_date = models.DateTimeField(auto_now_add=True)
-    priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES, default=10)
+
+    priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES,
+                                           default=10)
 
     class Meta:
         ordering = ['priority', '-pub_date']
@@ -71,3 +74,6 @@ class SavedSignals(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+import signals

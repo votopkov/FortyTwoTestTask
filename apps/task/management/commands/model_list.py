@@ -1,5 +1,5 @@
 from django.core.management.base import NoArgsCommand
-from _fucntions import count_instances
+from django.db.models import get_models
 
 
 class Command(NoArgsCommand):
@@ -7,6 +7,7 @@ class Command(NoArgsCommand):
     help = 'Print all project models and the count of objects in every model'
 
     def handle(self, *args, **kwargs):
-        for k, v in count_instances().items():
-            row = '%s\t%d' % (k, v)
-            self.stdout.write("Error: %s\n" % row)
+        for model in get_models():
+            self.stderr.write("Error: %s.%s %d\n" %
+                              (model.__module__, model.__name__,
+                               model._default_manager.count()))
