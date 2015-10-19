@@ -455,6 +455,14 @@ class TagTests(TestCase):
 class RequestPriorityFieldTest(TestCase):
     fixtures = ['initial_data.json']
 
+    def test_on_save_req_if_blank_priority(self):
+        # test if 25 requests in db
+        self.assertEqual(Requests.objects.all().count(), 25)
+        # create request with blank priority field
+        Requests.objects.create(request='test_request')
+        # test if new request has been created
+        self.assertEqual(Requests.objects.all().count(), 26)
+
     def test_request_priority_field(self):
         """
         Test priority ordering
