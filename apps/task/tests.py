@@ -409,9 +409,9 @@ class SignalsTests(TestCase):
 
     def test_count_SavedSignals(self):
         """
-        Must be 0 entries
+        Must be 131 entries
         """
-        self.assertEqual(SavedSignals.objects.all().count(), 0)
+        self.assertEqual(SavedSignals.objects.all().count(), 131)
 
     def test_signals_create_entry(self):
         """
