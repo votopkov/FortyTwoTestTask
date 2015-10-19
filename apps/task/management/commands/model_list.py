@@ -1,6 +1,7 @@
 from django.core.management.base import NoArgsCommand
 from django.db.models import get_models
 
+
 class Command(NoArgsCommand):
 
     help = 'Print all project models and the count of objects in every model'
