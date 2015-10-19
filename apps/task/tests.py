@@ -510,8 +510,8 @@ class RequestPriorityFieldTest(TestCase):
             i += 1
         # get list of requests
         response = client.get(reverse('task:request_list_ajax'),
-                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest',
-                                   content_type='application/json',)
+                              HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+                              content_type='application/json',)
         response_list = json.loads(response.content)
         # Test if the first entry is entry with priority 1
         self.assertEqual(response_list[0]['fields']['priority'], 1)
@@ -521,4 +521,3 @@ class RequestPriorityFieldTest(TestCase):
         # Test if the third entry has default priority and
         # after priority ordering by date
         self.assertEqual(response_list[2]['fields']['priority'], 10)
-
