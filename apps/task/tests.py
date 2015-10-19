@@ -334,7 +334,7 @@ class SaveHttpRequestTests(TestCase):
         """
         # create client and savehttpr... instance
         self.save_http = SaveHttpRequestMiddleware()
-        self.new_request = RequestFactory().get('/')
+        self.new_request = RequestFactory().get(reverse('task:index'))
         # save request to DB
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
@@ -411,7 +411,7 @@ class SignalsTests(TestCase):
         """
         Must be 707 entries
         """
-        self.assertEqual(SavedSignals.objects.all().count(), 707)
+        self.assertEqual(SavedSignals.objects.all().count(), 103)
 
     def test_signals_create_entry(self):
         """
