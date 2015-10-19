@@ -334,7 +334,7 @@ class SaveHttpRequestTests(TestCase):
         """
         # create client and savehttpr... instance
         self.save_http = SaveHttpRequestMiddleware()
-        self.new_request = RequestFactory().get('/')
+        self.new_request = RequestFactory().get(reverse('task:index'))
         # save request to DB
         self.save_http.process_request(request=self.new_request)
         # test saving request to DB
@@ -409,9 +409,9 @@ class SignalsTests(TestCase):
 
     def test_count_SavedSignals(self):
         """
-        Must be 707 entries
+        Must be 0 entries
         """
-        self.assertEqual(SavedSignals.objects.all().count(), 707)
+        self.assertEqual(SavedSignals.objects.all().count(), 0)
 
     def test_signals_create_entry(self):
         """
@@ -482,7 +482,7 @@ class RequestPriorityFieldTest(TestCase):
         """
         # I will make it the last by adding to it priority 1
         # get request with id - 7
-        req = Requests.objects.get(id=7)
+        req = Requests.objects.get(id=382)
         # get first request
         req_first = Requests.objects.first()
         # test if they are not equal

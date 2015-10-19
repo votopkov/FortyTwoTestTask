@@ -58,6 +58,3 @@ class SavedSignals(models.Model):
 
     def __unicode__(self):
         return self.title
-
-
-import signals
