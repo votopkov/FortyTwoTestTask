@@ -495,3 +495,30 @@ class RequestPriorityFieldTest(TestCase):
         # adding priority to request with id-7
         new_req_first = Requests.objects.first()
         self.assertEqual(req.id, new_req_first.id)
+
+    def test_priority_on_request_list_page(self):
+        """
+        Test ordering by priority on the page
+        """
+        # add 10 new quests to get valid json response
+        i = 0
+        while i < 10:
+            if i == 5:
+                Requests.objects.create(request='test_request', priority=1)
+            else:
+                Requests.objects.create(request='test_request')
+            i += 1
+        # get list of requests
+        response = client.get(reverse('task:request_list_ajax'),
+                                   HTTP_X_REQUESTED_WITH='XMLHttpRequest',
+                                   content_type='application/json',)
+        response_list = json.loads(response.content)
+        # Test if the first entry is entry with priority 1
+        self.assertEqual(response_list[0]['fields']['priority'], 1)
+        # Test if the second entry has default priority and
+        # after priority ordering by date
+        self.assertEqual(response_list[1]['fields']['priority'], 10)
+        # Test if the third entry has default priority and
+        # after priority ordering by date
+        self.assertEqual(response_list[2]['fields']['priority'], 10)
+

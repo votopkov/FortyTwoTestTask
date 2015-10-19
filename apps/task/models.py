@@ -4,20 +4,6 @@ from django.db import models
 from PIL import Image, ImageOps
 
 
-PRIORITY_CHOICES = (
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-    (6, 6),
-    (7, 7),
-    (8, 8),
-    (9, 9),
-    (10, 10),
-)
-
-
 class Profile(models.Model):
     url_height = models.PositiveIntegerField(editable=False, default=200)
     url_width = models.PositiveIntegerField(editable=False, default=200)
@@ -57,8 +43,7 @@ class Requests(models.Model):
     request = models.TextField()
     path = models.CharField(max_length=250, blank=True, null=True)
     pub_date = models.DateTimeField(auto_now_add=True)
-    priority = models.PositiveIntegerField(choices=PRIORITY_CHOICES,
-                                           default=10)
+    priority = models.PositiveIntegerField(default=10)
 
     class Meta:
         ordering = ['priority', '-pub_date']
