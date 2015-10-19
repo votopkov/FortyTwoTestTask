@@ -28,9 +28,9 @@ $(document).ready(function() {
                                 }
                                 $('body').attr('new_request', new_request)
                             }
-                            result += '<tr><td><a last_request=' + msg[key]['pk'] + ' href=\'/request_detail/' + msg[key]['pk'] + '/\'>' + msg[key]['pk'] + '</a></td>';
+                            result += '<tr><td><a last_request=' + msg[key]['pk'] + ' href="#">' + msg[key]['pk'] + '</a></td>';
                         } else {
-                            result += '<tr><td><a href=\'/request_detail/' + msg[key]['pk'] + '/\'>' + msg[key]['pk'] + '</a></td>';
+                            result += '<tr><td><a href="#">' + msg[key]['pk'] + '</a></td>';
                         }
 
                     }

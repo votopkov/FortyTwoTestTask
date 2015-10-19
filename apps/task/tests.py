@@ -301,34 +301,6 @@ class SaveHttpRequestTests(TestCase):
         # test if new request is the first
         self.assertEqual(Requests.objects.first().id, 2)
 
-    def test_request_detail(self):
-        """
-        Testing request detail view function
-        """
-        # get first request
-        client_2 = Client()
-        client.login(username='admin', password='admin')
-        request = Requests.objects.get(request='request_1')
-        # get first request
-        response = client.get(reverse('task:request_detail',
-                                      args=(request.id, )))
-        # get nonexistent request
-        response_2 = client.get(reverse('task:request_detail',
-                                        args=(555, )))
-        # get response with not login user
-        response_3 = client_2.get(reverse('task:request_detail',
-                                          args=(request.id, )))
-        # test gettings page with first profile
-        self.assertEqual(response.status_code, 200)
-        # test gettings page with nonexistent request
-        self.assertEqual(response_2.status_code, 404)
-        # test not login user
-        self.assertEqual(response_3.status_code, 302)
-        # test first request data on the page
-        self.assertIn(request.request, response.content)
-        # test context of the detail request
-        self.assertEqual(request, response.context['obj'])
-
     def test_save_request(self):
         """
         Test SaveHttpRequestMiddleware()
@@ -362,24 +334,6 @@ class SaveHttpRequestNoDataTests(TestCase):
                               content_type='application/json',
                               HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEquals(response.status_code, 200)
-
-    def test_request_detail(self):
-        """
-        Testing request detail view function
-        """
-        # get request
-        response = client.get(reverse('task:request_detail',
-                                      args=(2, )))
-        # test gettings page with unexisted request
-        self.assertEqual(response.status_code, 302)
-        # create user to test
-        User.objects.create_user('admin', ' ', 'admin')
-        # login user
-        client.login(username='admin', password='admin')
-        # test gettings page with unexisted request
-        response_2 = client.get(reverse('task:request_detail',
-                                        args=(2, )))
-        self.assertEqual(response_2.status_code, 200)
 
 
 class CommandTests(TestCase):

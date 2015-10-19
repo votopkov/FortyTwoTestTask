@@ -38,13 +38,6 @@ def request_list_ajax(request):
 
 
 @login_required()
-def request_detail(request, identify):
-    obj = get_object_or_404(Requests, pk=identify)
-    context = dict(obj=obj)
-    return render(request, 'task/request_detail.html', context)
-
-
-@login_required()
 @require_POST
 def update_profile(request):
     identify = request.POST.get('id')
