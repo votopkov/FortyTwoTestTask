@@ -4,15 +4,15 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase, RequestFactory
-from models import Profile, Requests, SavedSignals
-from middleware import SaveHttpRequestMiddleware
+from apps.task.models import Profile, Requests, SavedSignals
+from apps.task.middleware import SaveHttpRequestMiddleware
 import json
 from django.utils.encoding import smart_unicode
 from django.utils.six import StringIO
 from django.template import Template, Context
 from apps.task.templatetags.task_tags import edit_link
 from django.core.management import call_command
-from forms import ProfileForm
+from apps.task.forms import ProfileForm
 
 
 client = Client()
@@ -369,9 +369,9 @@ class SignalsTests(TestCase):
 
     def test_count_SavedSignals(self):
         """
-        Must be 0 entries
+        Must be 196 entries
         """
-        self.assertEqual(SavedSignals.objects.all().count(), 131)
+        self.assertEqual(SavedSignals.objects.all().count(), 196)
 
     def test_signals_create_entry(self):
         """

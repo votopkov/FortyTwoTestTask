@@ -2,7 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http.response import HttpResponse, Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from models import Profile
 from models import Requests
 from forms import ProfileForm

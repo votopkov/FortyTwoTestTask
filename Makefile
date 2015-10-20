@@ -15,6 +15,15 @@ syncdb:
 flake8:
 	flake8 --exclude '*migrations*' apps
 
+functional_admin_test:
+	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=testtask.settings $(MANAGE) test apps.task.tests.selenium_admin_test
+
+functional_test:
+	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=testtask.settings $(MANAGE) test apps.task.tests.selenium_test
+
+dumpdata:
+	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=testtask.settings $(MANAGE) dumpdata -e admin -e contenttypes > apps/task/fixtures/initial_data.json
+
 
 
 
