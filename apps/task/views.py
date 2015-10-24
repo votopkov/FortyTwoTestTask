@@ -70,7 +70,8 @@ def tasks(request, template='task/task_list.html',
         form = TaskForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.add_message(request, messages.SUCCESS, 'Task has been created!')
+            messages.add_message(request, messages.SUCCESS,
+                                 'Task has been created!')
     task = Task.objects.all()
     context = {
         'task': task,
@@ -79,7 +80,8 @@ def tasks(request, template='task/task_list.html',
     }
     if request.is_ajax():
         template = page_template
-    return render(request, template, context,context_instance=RequestContext(request))
+    return render(request, template,
+                  context, context_instance=RequestContext(request))
 
 
 @require_POST
@@ -91,10 +93,12 @@ def edit_task(request):
     form = TaskForm(copy, instance=task)
     if form.is_valid():
         form.save()
-        messages.add_message(request, messages.SUCCESS, 'Task has been updated!')
-        return HttpResponseRedirect(reverse('task:tasks'))
+        messages.add_message(request, messages.SUCCESS,
+                             'Task has been updated!')
     else:
-        raise Http404
+        messages.add_message(request, messages.ERROR,
+                             'Error: Task is not updated!')
+    return HttpResponseRedirect(reverse('task:tasks'))
 
 
 @login_required()

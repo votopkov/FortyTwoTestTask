@@ -2,7 +2,8 @@ from apps.task.models import SavedSignals
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 
-exclude_models_name = ['SavedSignals', 'ContentType', 'MigrationHistory']
+exclude_models_name = ['SavedSignals', 'ContentType',
+                       'LogEntry', 'MigrationHistory']
 
 
 @receiver(post_save)

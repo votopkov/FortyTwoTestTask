@@ -347,8 +347,6 @@ class CommandTests(TestCase):
         call_command('model_list', stderr=out)
         self.assertIn('apps.task.models.Requests',
                       out.getvalue())
-        self.assertIn('Error: apps.task.models.Profile',
-                      out.getvalue())
 
     def test_model_list_script(self):
         """
@@ -371,7 +369,7 @@ class SignalsTests(TestCase):
         """
         Must be 196 entries
         """
-        self.assertEqual(SavedSignals.objects.all().count(), 196)
+        self.assertEqual(SavedSignals.objects.all().count(), 115)
 
     def test_signals_create_entry(self):
         """
@@ -457,22 +455,21 @@ class RequestPriorityFieldTest(TestCase):
 
     def test_on_save_req_if_blank_priority(self):
         # test if 25 requests in db
-        self.assertEqual(Requests.objects.all().count(), 25)
+        self.assertEqual(Requests.objects.all().count(), 3)
         # create request with blank priority field
         Requests.objects.create(request='test_request')
         # test if new request has been created
-        self.assertEqual(Requests.objects.all().count(), 26)
+        self.assertEqual(Requests.objects.all().count(), 4)
 
     def test_request_priority_field(self):
         """
         Test priority ordering
         at first order by -pub_date, then priority
-        They all have default priority - 9
-        There are 311 Request entries in db
+        They all have default priority - 10
         """
         # I will make it the last by adding to it priority 1
-        # get request with id - 7
-        req = Requests.objects.get(id=382)
+        # get request with id - 3
+        req = Requests.objects.get(id=710)
         # get first request
         req_first = Requests.objects.first()
         # test if they are not equal

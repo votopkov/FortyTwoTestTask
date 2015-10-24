@@ -8,9 +8,10 @@ STATUS_CHOICES = (
     (2, u'Не выполнено'),
 )
 
+
 def number():
         task_count = Task.objects.count()
-        if task_count == None:
+        if task_count is None:
             return 1
         else:
             return task_count + 1
