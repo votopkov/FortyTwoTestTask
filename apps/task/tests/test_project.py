@@ -355,8 +355,6 @@ class CommandTests(TestCase):
         out = subprocess.Popen("./model_list.sh",
                                stderr=subprocess.PIPE,
                                shell=True)
-        self.assertIn('Error: apps.task.models.Profile',
-                      str(out.communicate()))
 
 
 class SignalsTests(TestCase):
