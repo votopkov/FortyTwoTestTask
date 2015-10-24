@@ -121,7 +121,7 @@ h1 {
 }
 
 .table th {
-   text-align: center;
+    text-align: center;
 }
 
 #bio_title {
@@ -140,4 +140,63 @@ h1 {
 
 .edit-admin-div {
     margin-top:30px;
+}
+
+
+/* /tasks/ */
+
+.task-title, .task-description-title {
+    font-weight: bold;
+}
+
+.task-description-title {
+    margin-top:10px;
+    margin-bottom:5px;
+}
+
+.task_hr {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    height: 1px;
+    border: 0;
+    border-bottom: 1px solid rgba(31, 30, 31, 0.18);
+}
+
+.task-title, .task-title-name, .task-status {
+    display: inline-block;
+}
+
+.task-title-name, .task-status {
+    margin-left:5px;
+}
+
+.task_edit_button {
+    margin-top:20px;
+}
+
+.title-input {
+    margin-bottom:10px;
+}
+
+.django-message {
+    padding:10px;
+    padding-left:45px;
+}
+
+.django-message-main-div {
+    width:100%;
+}
+
+.sortable {
+    display: block;
+    list-style: circle;
+}
+
+.sortable > .ui-state-default, .sortable > form > .ui-state-default {
+    overflow: auto;
+	width: 100%
+}
+
+.tasts_link {
+    padding-top:15px;
 }

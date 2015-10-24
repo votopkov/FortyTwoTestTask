@@ -3,6 +3,18 @@ from django.contrib.auth.models import User
 from django.db import models
 from PIL import Image, ImageOps
 
+STATUS_CHOICES = (
+    (1, u'Выполнено',),
+    (2, u'Не выполнено'),
+)
+
+def number():
+        task_count = Task.objects.count()
+        if task_count == None:
+            return 1
+        else:
+            return task_count + 1
+
 
 class Profile(models.Model):
     url_height = models.PositiveIntegerField(editable=False, default=200)
@@ -46,7 +58,7 @@ class Requests(models.Model):
     priority = models.PositiveIntegerField(default=10)
 
     class Meta:
-        ordering = ['priority', '-pub_date']
+        ordering = ['priority', 'pub_date']
 
     def __unicode__(self):
         return self.title
@@ -55,6 +67,21 @@ class Requests(models.Model):
 class SavedSignals(models.Model):
     title = models.CharField(max_length=250)
     status = models.CharField(max_length=250)
+
+    def __unicode__(self):
+        return self.title
+
+
+class Task(models.Model):
+    user = models.ForeignKey(User)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    pub_date = models.DateTimeField(auto_now_add=True)
+    priority = models.IntegerField(default=number)
+    status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=2)
+
+    class Meta:
+        ordering = ['priority', '-pub_date']
 
     def __unicode__(self):
         return self.title

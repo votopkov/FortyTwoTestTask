@@ -17,4 +17,7 @@ urlpatterns = patterns('',
                        }, name='logout'),
                        url(r'^update_profile/$', views.update_profile,
                            name='update_profile'),
+                       url(r'^tasks/$', views.tasks, name='tasks'),
+                       url(r'^edit_task$', views.edit_task, name='edit_task'),
+                       url(r'^update_priority/$', views.update_priority, name='update_priority'),
                        )

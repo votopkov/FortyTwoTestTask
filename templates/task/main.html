@@ -19,6 +19,7 @@
                         </div>
                         <div class="header_link"><a href='{% url 'task:edit_profile' %}'>Edit</a></div>
                         <a href='{% edit_link profile %}'>(admin)</a>
+                        <div class="tasts_link"><a href="{% url 'task:tasks' %}">Tasks</a></div>
                     {% else %}
                         <div class="logout-div">
                             <a href='{% url 'task:login' %}'>Login</a>

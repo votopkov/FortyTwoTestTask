@@ -299,7 +299,7 @@ class SaveHttpRequestTests(TestCase):
         # test count of requests in db
         self.assertEqual(Requests.objects.all().count(), 2)
         # test if new request is the first
-        self.assertEqual(Requests.objects.first().id, 2)
+        self.assertEqual(Requests.objects.first().id, 1)
 
     def test_save_request(self):
         """
