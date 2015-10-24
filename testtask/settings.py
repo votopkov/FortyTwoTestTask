@@ -17,6 +17,11 @@ FIXTURE_DIRS = (
    os.path.join(BASE_DIR, 'apps/task/fixtures/'),
 )
 
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+TEMPLATE_CONTEXT_PROCESSORS += (
+    'django.core.context_processors.request',
+)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -39,9 +44,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.admin.widgets',
     'apps.task',
     'south',
+    'endless_pagination',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -87,8 +92,6 @@ USE_L10N = True
 USE_TZ = False
 
 DEFAULT_CHARSET = 'utf-8'
-
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/

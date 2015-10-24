@@ -4,15 +4,15 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import Client
 from django.test import TestCase, RequestFactory
-from models import Profile, Requests, SavedSignals
-from middleware import SaveHttpRequestMiddleware
+from apps.task.models import Profile, Requests, SavedSignals
+from apps.task.middleware import SaveHttpRequestMiddleware
 import json
 from django.utils.encoding import smart_unicode
 from django.utils.six import StringIO
 from django.template import Template, Context
 from apps.task.templatetags.task_tags import edit_link
 from django.core.management import call_command
-from forms import ProfileForm
+from apps.task.forms import ProfileForm
 
 
 client = Client()
@@ -299,7 +299,7 @@ class SaveHttpRequestTests(TestCase):
         # test count of requests in db
         self.assertEqual(Requests.objects.all().count(), 2)
         # test if new request is the first
-        self.assertEqual(Requests.objects.first().id, 2)
+        self.assertEqual(Requests.objects.first().id, 1)
 
     def test_save_request(self):
         """
@@ -347,8 +347,6 @@ class CommandTests(TestCase):
         call_command('model_list', stderr=out)
         self.assertIn('apps.task.models.Requests',
                       out.getvalue())
-        self.assertIn('Error: apps.task.models.Profile',
-                      out.getvalue())
 
     def test_model_list_script(self):
         """
@@ -369,9 +367,9 @@ class SignalsTests(TestCase):
 
     def test_count_SavedSignals(self):
         """
-        Must be 131 entries
+        Must be 196 entries
         """
-        self.assertEqual(SavedSignals.objects.all().count(), 131)
+        self.assertEqual(SavedSignals.objects.all().count(), 115)
 
     def test_signals_create_entry(self):
         """
@@ -455,16 +453,23 @@ class TagTests(TestCase):
 class RequestPriorityFieldTest(TestCase):
     fixtures = ['initial_data.json']
 
+    def test_on_save_req_if_blank_priority(self):
+        # test if 25 requests in db
+        self.assertEqual(Requests.objects.all().count(), 3)
+        # create request with blank priority field
+        Requests.objects.create(request='test_request')
+        # test if new request has been created
+        self.assertEqual(Requests.objects.all().count(), 4)
+
     def test_request_priority_field(self):
         """
         Test priority ordering
         at first order by -pub_date, then priority
-        They all have default priority - 9
-        There are 311 Request entries in db
+        They all have default priority - 10
         """
         # I will make it the last by adding to it priority 1
-        # get request with id - 7
-        req = Requests.objects.get(id=382)
+        # get request with id - 3
+        req = Requests.objects.get(id=710)
         # get first request
         req_first = Requests.objects.first()
         # test if they are not equal

@@ -1,0 +1,23 @@
+ {% load endless %}
+ {% paginate 10 task %}
+{% for item in task %}
+    <div id="{{ item.id }}" class="ui-state-default task_item" priority="{{ item.priority }}">
+        <div class="task-title title-parent col-xs-4">
+            <div class="task-title">Title: </div><div class="task-title-name">{{ item.title }}</div>
+        </div>
+        <div class="col-xs-4">
+            <div class="task-title">Pub_date: </div><div class="task-status">{{ item.pub_date }}</div>
+        </div>
+        <div class="col-xs-2 status-parent col-xs-offset-2">
+            <div class="task-title">Status: </div><div class="task-status" status="{{ item.status }}">{{ item.get_status_display }}</div>
+        </div>
+        <div class="col-xs-12 description-parent">
+            <div class="task-description-title">Description</div><div class="task-description">{{ item.description }}</div>
+        </div>
+        <div class="col-xs-12"><button onclick="edit_form(this)" id="{{ item.id }}"class="btn btn-default task_edit_button">Edit task</button></div>
+        <div class="col-xs-12 task_hr"></div>
+    </div>
+{% empty %}
+    <div class="col-xs-6 col-xs-offset-3 text-danger"><h2 class="text-center">There are no tasks</h2></div>
+{% endfor %}
+{% show_more %}

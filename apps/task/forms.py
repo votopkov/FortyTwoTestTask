@@ -1,5 +1,6 @@
 from django import forms
-from models import Profile
+from django.contrib.auth.models import User
+from models import Profile, Task
 from widgets import DatePickerWidget
 
 
@@ -46,3 +47,19 @@ class ProfileForm(forms.ModelForm):
                   'date_of_birth', 'photo', 'bio',
                   'email', 'jabber', 'skype',
                   'other_contacts']
+
+
+class TaskForm(forms.ModelForm):
+    user = forms.ModelChoiceField(queryset=User.objects.all(), label="",
+                                  widget=forms.HiddenInput())
+    title = forms.CharField(max_length=100,
+                            min_length=3,
+                            widget=forms.TextInput(
+                                attrs={'class': 'form-control'}))
+    description = forms.CharField(min_length=3,
+                                  widget=forms.Textarea(
+                                      attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = Task
+        fields = ['user', 'title', 'description', 'status']
